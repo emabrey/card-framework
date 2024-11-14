@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7u8hryloq7hy"]
+
+[ext_resource type="Script" path="res://card_framework/card_manager.gd" id="1_cp2xm"]
+[ext_resource type="PackedScene" uid="uid://brjlo8xing83p" path="res://card_framework/card.tscn" id="1_rvy15"]
+[ext_resource type="PackedScene" uid="uid://dkmme1pig03ie" path="res://card_framework/drop_zone.tscn" id="2_0bmnm"]
+
+[node name="CardManager" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_cp2xm")
+
+[node name="Card1" parent="." instance=ExtResource("1_rvy15")]
+layout_mode = 1
+offset_left = 200.0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 200.0
+
+[node name="Card2" parent="." instance=ExtResource("1_rvy15")]
+layout_mode = 1
+offset_left = 300.0
+offset_top = 200.0
+offset_right = 300.0
+offset_bottom = 200.0
+
+[node name="DropZone" parent="." instance=ExtResource("2_0bmnm")]
+layout_mode = 1
+offset_left = 350.0
+offset_top = 500.0
+offset_right = 550.0
+offset_bottom = 700.0
+
+[node name="ColorRect" type="ColorRect" parent="DropZone"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.447071, 0.757751, 0.675506, 1)
