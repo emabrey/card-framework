@@ -1,12 +1,16 @@
 class_name CardManager
 extends Control
 
+@export var card_size := Vector2(150, 210)
+
 var drop_zone_dict := {}
+
 
 func _init() -> void:
 	CardFrameworkSignalBus.drop_zone_added.connect(_on_drop_zone_added)
 	CardFrameworkSignalBus.drop_zone_deleted.connect(_on_drop_zone_deleted)
-	CardFrameworkSignalBus.card_dropped.connect(_on_card_dropped)
+	CardFrameworkSignalBus.drag_dropped.connect(_on_card_dropped)
+	
 
 func _ready() -> void:
 	pass
@@ -30,6 +34,8 @@ func _on_card_dropped(card: Card) -> DropZone:
 		if drop_zone.enabled:
 			var result = drop_zone.check_card_can_be_dropped(card)
 			if result:
+				card.move_to_drop_zone(drop_zone)
 				return drop_zone
 				
+	card.return_card()
 	return null

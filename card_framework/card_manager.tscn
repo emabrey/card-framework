@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://c7u8hryloq7hy"]
+[gd_scene load_steps=7 format=3 uid="uid://c7u8hryloq7hy"]
 
 [ext_resource type="Script" path="res://card_framework/card_manager.gd" id="1_cp2xm"]
 [ext_resource type="PackedScene" uid="uid://brjlo8xing83p" path="res://card_framework/card.tscn" id="1_rvy15"]
 [ext_resource type="PackedScene" uid="uid://dkmme1pig03ie" path="res://card_framework/drop_zone.tscn" id="2_0bmnm"]
+[ext_resource type="Texture2D" uid="uid://bg5qrq2m3p7vx" path="res://assets/images/cards/cardDiamondsA.png" id="3_1okis"]
+[ext_resource type="Texture2D" uid="uid://bnx5n1lm62uhd" path="res://assets/images/cards/cardBack_blue1.png" id="4_br0t2"]
+[ext_resource type="Texture2D" uid="uid://bcj7enn5aud74" path="res://assets/images/cards/cardClubsK.png" id="5_3nhiu"]
 
 [node name="CardManager" type="Control"]
 layout_mode = 3
@@ -15,6 +18,8 @@ offset_left = 200.0
 offset_top = 200.0
 offset_right = 200.0
 offset_bottom = 200.0
+front_image = ExtResource("3_1okis")
+back_image = ExtResource("4_br0t2")
 
 [node name="Card2" parent="." instance=ExtResource("1_rvy15")]
 layout_mode = 1
@@ -22,25 +27,15 @@ offset_left = 300.0
 offset_top = 200.0
 offset_right = 300.0
 offset_bottom = 200.0
+front_image = ExtResource("5_3nhiu")
+back_image = ExtResource("4_br0t2")
 
 [node name="DropZone" parent="." instance=ExtResource("2_0bmnm")]
+z_index = -1000
 layout_mode = 1
-offset_left = 350.0
-offset_top = 500.0
-offset_right = 550.0
-offset_bottom = 700.0
-
-[node name="ColorRect" type="ColorRect" parent="DropZone"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.447071, 0.757751, 0.675506, 1)
+sensor_size = Vector2(300, 300)
+sensor_position = Vector2(450, 500)
+sensor_color = Color(0, 0, 1, 1)
+placement_size = Vector2(150, 210)
+placement_position = Vector2(800, 600)
+placement_color = Color(0, 1, 0, 1)

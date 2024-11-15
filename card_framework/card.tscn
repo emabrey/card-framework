@@ -1,77 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://brjlo8xing83p"]
+[gd_scene load_steps=2 format=3 uid="uid://brjlo8xing83p"]
 
 [ext_resource type="Script" path="res://card_framework/card.gd" id="1_6ohl5"]
-[ext_resource type="Texture2D" uid="uid://bx5sa3px1g4r2" path="res://assets/images/cards/cardSpadesA.png" id="2_3g3di"]
-[ext_resource type="Texture2D" uid="uid://bnx5n1lm62uhd" path="res://assets/images/cards/cardBack_blue1.png" id="3_0dkax"]
 
 [node name="Card" type="Control"]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
 script = ExtResource("1_6ohl5")
-metadata/_edit_use_anchors_ = true
 
 [node name="FrontFace" type="Control" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 mouse_filter = 1
 
 [node name="TextureRect" type="TextureRect" parent="FrontFace"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -84.0
-offset_top = -120.0
-offset_right = 84.0
-offset_bottom = 120.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_3g3di")
+offset_right = 150.0
+offset_bottom = 210.0
 
 [node name="BackFace" type="Control" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 mouse_filter = 1
 
 [node name="TextureRect" type="TextureRect" parent="BackFace"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -84.0
-offset_top = -120.0
-offset_right = 84.0
-offset_bottom = 120.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_0dkax")
+offset_right = 150.0
+offset_bottom = 210.0

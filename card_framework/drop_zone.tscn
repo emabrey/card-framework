@@ -12,3 +12,11 @@ grow_vertical = 2
 mouse_filter = 2
 mouse_force_pass_scroll_events = false
 script = ExtResource("1_w6usu")
+
+[node name="Sensor" type="ColorRect" parent="."]
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Placement" type="ColorRect" parent="."]
+layout_mode = 0
+mouse_filter = 2
