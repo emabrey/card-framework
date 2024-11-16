@@ -34,7 +34,6 @@ back_image = ExtResource("4_br0t2")
 z_index = -1000
 layout_mode = 1
 sensor_size = Vector2(300, 300)
-sensor_position = Vector2(450, 500)
 sensor_color = Color(0, 0, 1, 1)
 placement_size = Vector2(150, 210)
 placement_position = Vector2(800, 600)
