@@ -1,6 +1,8 @@
 class_name Card
 extends Control
 
+const HOLDING_Z_INDEX = 1000
+
 @export var card_size := Vector2(150, 210)
 @export var front_image: Texture2D
 @export var back_image: Texture2D
@@ -18,6 +20,7 @@ extends Control
 var is_hovering := false
 var is_clicked := false
 var is_holding := false
+var stored_z_index: int
 var is_moving_to_destination := false
 var current_holding_mouse_position: Vector2
 var destination: Vector2
@@ -40,9 +43,10 @@ func _ready():
 		
 	destination = position
 	show_front = show_front
+	stored_z_index = z_index
 
 
-func _process(delta):	
+func _process(delta):
 	if is_holding:
 		position = get_global_mouse_position() - current_holding_mouse_position
 		
@@ -51,6 +55,7 @@ func _process(delta):
 		if position == destination:
 			is_moving_to_destination = false
 			mouse_filter = Control.MOUSE_FILTER_STOP
+			z_index = stored_z_index
 
 
 func return_card():
@@ -82,6 +87,7 @@ func _on_gui_input(event: InputEvent):
 			is_clicked = true
 			is_holding = true
 			current_holding_mouse_position = get_local_mouse_position()
+			z_index = HOLDING_Z_INDEX
 		else:
 			if is_holding:
 				CardFrameworkSignalBus.drag_dropped.emit(self)
