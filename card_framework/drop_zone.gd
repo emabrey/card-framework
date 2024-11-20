@@ -1,6 +1,8 @@
 class_name DropZone
 extends Control
 
+signal card_dropped(card: Card)
+
 static var next_id = 0
 
 @export_group("Sensor")
@@ -28,14 +30,9 @@ func _init():
 	
 func _ready():
 	CardFrameworkSignalBus.drop_zone_added.emit(unique_id, self)
-	sensor.size = sensor_size
-	sensor.position = sensor_position
-	sensor.color = sensor_color
-	sensor.visible = sensor_visibility
-	placement.size = placement_size
-	placement.position = placement_position
-	placement.color = placement_color
-	placement.visible = placement_visibility
+	set_sensor(sensor_size, sensor_position, sensor_color, sensor_visibility)
+	set_placement(placement_size, placement_position, placement_color, placement_visibility)
+
 
 func _exit_tree() -> void:
 	CardFrameworkSignalBus.drop_zone_deleted.emit(unique_id)
@@ -53,5 +50,24 @@ func set_enabled(_enabled: bool):
 	else:
 		CardFrameworkSignalBus.drop_zone_disabled.emit(unique_id)
 
+
 func check_card_can_be_dropped(card: Card):
 	return _check_mouse_is_in_drop_zone()
+
+
+func set_sensor(size: Vector2, positon: Vector2, color: Color, visible: bool):
+	sensor.size = size
+	sensor.position = position
+	sensor.color = color
+	sensor.visible = visible
+	
+
+func set_placement(size: Vector2, positon: Vector2, color: Color, visible: bool):
+	placement.size = size
+	placement.position = position
+	placement.color = color
+	placement.visible = visible
+
+
+func get_place_zone() -> Vector2:
+	return placement.global_position

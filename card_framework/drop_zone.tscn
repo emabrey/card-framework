@@ -14,9 +14,11 @@ mouse_force_pass_scroll_events = false
 script = ExtResource("1_w6usu")
 
 [node name="Sensor" type="ColorRect" parent="."]
+z_index = -1000
 layout_mode = 0
 mouse_filter = 2
 
 [node name="Placement" type="ColorRect" parent="."]
+z_index = -1000
 layout_mode = 0
 mouse_filter = 2

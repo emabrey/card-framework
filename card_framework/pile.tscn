@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://dk6rb7lhv1ef6"]
+
+[ext_resource type="Script" path="res://card_framework/pile.gd" id="1_34nb1"]
+[ext_resource type="PackedScene" uid="uid://dkmme1pig03ie" path="res://card_framework/drop_zone.tscn" id="2_w2kdc"]
+
+[node name="Pile" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+script = ExtResource("1_34nb1")
+
+[node name="Cards" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+
+[node name="DropZone" parent="." instance=ExtResource("2_w2kdc")]
+layout_mode = 1

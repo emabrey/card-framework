@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://card_framework/card_manager.gd" id="1_cp2xm"]
 [ext_resource type="PackedScene" uid="uid://brjlo8xing83p" path="res://card_framework/card.tscn" id="1_rvy15"]
-[ext_resource type="PackedScene" uid="uid://dkmme1pig03ie" path="res://card_framework/drop_zone.tscn" id="2_0bmnm"]
 [ext_resource type="Texture2D" uid="uid://bg5qrq2m3p7vx" path="res://assets/images/cards/cardDiamondsA.png" id="3_1okis"]
 [ext_resource type="Texture2D" uid="uid://bnx5n1lm62uhd" path="res://assets/images/cards/cardBack_blue1.png" id="4_br0t2"]
 [ext_resource type="Texture2D" uid="uid://bcj7enn5aud74" path="res://assets/images/cards/cardClubsK.png" id="5_3nhiu"]
+[ext_resource type="PackedScene" uid="uid://dk6rb7lhv1ef6" path="res://card_framework/pile.tscn" id="7_q6vhp"]
 
 [node name="CardManager" type="Control"]
 layout_mode = 3
@@ -30,11 +30,23 @@ offset_bottom = 200.0
 front_image = ExtResource("5_3nhiu")
 back_image = ExtResource("4_br0t2")
 
-[node name="DropZone" parent="." instance=ExtResource("2_0bmnm")]
-z_index = -1000
-layout_mode = 1
-sensor_size = Vector2(300, 300)
-sensor_color = Color(0, 0, 1, 1)
+[node name="Pile" parent="." instance=ExtResource("7_q6vhp")]
+offset_left = 500.0
+offset_top = 500.0
+offset_right = 500.0
+offset_bottom = 500.0
+sensor_size = Vector2(150, 210)
+sensor_color = Color(0.188235, 0.862745, 0.207843, 1)
 placement_size = Vector2(150, 210)
-placement_position = Vector2(800, 600)
-placement_color = Color(0, 1, 0, 1)
+placement_position = Vector2(100, 0)
+placement_color = Color(0, 0, 1, 1)
+
+[node name="Pile2" parent="." instance=ExtResource("7_q6vhp")]
+offset_left = 800.0
+offset_top = 800.0
+offset_right = 800.0
+offset_bottom = 800.0
+sensor_size = Vector2(150, 210)
+sensor_color = Color(0, 1, 0, 1)
+placement_size = Vector2(150, 210)
+placement_color = Color(0, 0, 1, 1)

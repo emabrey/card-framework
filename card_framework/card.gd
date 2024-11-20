@@ -24,6 +24,7 @@ var stored_z_index: int
 var is_moving_to_destination := false
 var current_holding_mouse_position: Vector2
 var destination: Vector2
+var target_drop_zone: DropZone
 
 @onready var front_face_texture := $FrontFace/TextureRect
 @onready var back_face_texture := $BackFace/TextureRect
@@ -44,21 +45,24 @@ func _ready():
 	if back_image:
 		back_face_texture.texture = back_image
 		
-	destination = position
+	destination = global_position
 	show_front = show_front
 	stored_z_index = z_index
 
 
 func _process(delta):
 	if is_holding:
-		position = get_global_mouse_position() - current_holding_mouse_position
+		global_position = get_global_mouse_position() - current_holding_mouse_position
 		
 	if is_moving_to_destination:
-		position = position.move_toward(destination, return_speed * delta)
-		if position == destination:
+		global_position = global_position.move_toward(destination, return_speed * delta)
+		if global_position == destination:
 			is_moving_to_destination = false
 			z_index = stored_z_index
 			CardFrameworkSignalBus.card_move_done.emit(self)
+			if target_drop_zone != null:
+				target_drop_zone.emit_signal("card_dropped", self)
+				target_drop_zone = null
 
 
 func return_card():
@@ -67,7 +71,8 @@ func return_card():
 	
 func move_to_drop_zone(drop_zone: DropZone):
 	is_moving_to_destination = true
-	destination = drop_zone.placement_position
+	destination = drop_zone.get_place_zone()
+	target_drop_zone = drop_zone
 	
 	
 func _on_mouse_enter():
