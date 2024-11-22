@@ -41,7 +41,4 @@ func _card_dropped(card: Card) -> void:
 	
 
 func add_card(card: Card) -> void:
-	var global_pos = card.global_position
-	card.get_parent().remove_child(card)
-	cards.add_child(card)
-	card.global_position = global_pos
+	Util.move_object(card, cards)

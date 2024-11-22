@@ -16,6 +16,7 @@ config/features=PackedStringArray("4.3", "Forward Plus")
 [autoload]
 
 CardFrameworkSignalBus="*res://card_framework/card_framework_signal_bus.gd"
+Util="*res://card_framework/util.gd"
 
 [display]
 
