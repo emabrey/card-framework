@@ -39,24 +39,32 @@ func _ready() -> void:
 
 func _card_dropped(card: Card, drop_zone: DropZone) -> void:
 	if self.drop_zone == drop_zone:
-		add_card(card)
+		if !_held_cards.has(card):
+			add_card(card)
+		_update_target_positions()
 	elif _held_cards.has(card):
 		_held_cards.remove_at(_held_cards.find(card))
 		_update_target_positions()
-	
+
 
 func add_card(card: Card) -> void:
 	Util.move_object(card, cards)
 	_held_cards.append(card)
-	_update_target_positions()
 
-	
+
+func shuffle():
+	_held_cards.shuffle()
+	for i in _held_cards.size():
+		var card = _held_cards[i]
+		cards.move_child(card, i)
+
+
 func _update_target_positions():
 	for i in _held_cards.size():
 		var card = _held_cards[i]
 		var target_pos = position + _calculate_offset(i)
 		card.show_front = card_face_up
-		card.z_index = 3000 + i if card.is_clicked else i
+		card.stored_z_index = 3000 + i if card.is_clicked else i
 		card.move(target_pos)
 
 
