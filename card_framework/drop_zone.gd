@@ -1,8 +1,6 @@
 class_name DropZone
 extends Control
 
-signal card_dropped(card: Card)
-
 static var next_id = 0
 
 @export_group("Sensor")

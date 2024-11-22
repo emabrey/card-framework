@@ -61,19 +61,24 @@ func _process(delta):
 			z_index = stored_z_index
 			CardFrameworkSignalBus.card_move_done.emit(self)
 			if target_drop_zone != null:
-				target_drop_zone.emit_signal("card_dropped", self)
+				CardFrameworkSignalBus.card_dropped.emit(self, target_drop_zone)
 				target_drop_zone = null
 
 
 func return_card():
 	is_moving_to_destination = true
-	
+
+
+func move(destination: Vector2):
+	is_moving_to_destination = true
+	self.destination = destination
+
 	
 func move_to_drop_zone(drop_zone: DropZone):
 	is_moving_to_destination = true
 	destination = drop_zone.get_place_zone()
 	target_drop_zone = drop_zone
-	
+
 	
 func _on_mouse_enter():
 	if _can_interact_with():
