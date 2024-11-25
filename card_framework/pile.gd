@@ -44,13 +44,25 @@ func _card_dropped(card: Card, drop_zone: DropZone) -> void:
 			add_card(card)
 		_update_target_positions()
 	elif _held_cards.has(card):
-		_held_cards.remove_at(_held_cards.find(card))
-		_update_target_positions()
+		remove_card(card)
 
 
 func add_card(card: Card) -> void:
 	Util.move_object(card, cards)
 	_held_cards.append(card)
+
+
+func remove_card(card: Card) -> bool:
+	var index = _held_cards.find(card);
+	if index == -1:
+		return false
+	_held_cards.remove_at(_held_cards.find(card))
+	_update_target_positions()
+	return true
+
+
+func get_top_card() -> Card:
+	return _held_cards.back()
 
 
 func shuffle():
@@ -67,6 +79,7 @@ func _update_target_positions():
 		var target_pos = position + _calculate_offset(i)
 		card.show_front = card_face_up
 		card.stored_z_index = 3000 + i if card.is_clicked else i
+		card.move_rotation(0)
 		card.move(target_pos)
 		
 		if set_top_accessible_only:

@@ -26,6 +26,7 @@ var stored_z_index: int
 var is_moving_to_destination := false
 var current_holding_mouse_position: Vector2
 var destination: Vector2
+var destination_degree: float
 var target_drop_zone: DropZone
 
 static var is_any_card_hovering := false
@@ -48,11 +49,10 @@ func _ready():
 		front_face_texture.texture = front_image
 	if back_image:
 		back_face_texture.texture = back_image
-		
+	pivot_offset = card_size / 2
 	destination = global_position
 	show_front = show_front
 	stored_z_index = z_index
-
 
 func _process(delta):
 	if is_holding:
@@ -65,24 +65,32 @@ func _process(delta):
 			_end_hovering(false)
 			z_index = stored_z_index
 			CardFrameworkSignalBus.card_move_done.emit(self)
+			rotation = destination_degree
 			if target_drop_zone != null:
 				CardFrameworkSignalBus.card_dropped.emit(self, target_drop_zone)
 				target_drop_zone = null
 
 
 func return_card():
+	rotation = 0
 	is_moving_to_destination = true
 
 
 func move(destination: Vector2):
+	rotation = 0
 	is_moving_to_destination = true
 	self.destination = destination
 
 	
 func move_to_drop_zone(drop_zone: DropZone):
+	rotation = 0
 	is_moving_to_destination = true
 	destination = drop_zone.get_place_zone()
 	target_drop_zone = drop_zone
+
+
+func move_rotation(degree: float):
+	destination_degree = degree
 
 	
 func _on_mouse_enter():
@@ -110,6 +118,7 @@ func _on_gui_input(event: InputEvent):
 			is_holding = true
 			current_holding_mouse_position = get_local_mouse_position()
 			z_index = z_index + HOLDING_Z_INDEX
+			rotation = 0
 		else:
 			if is_holding:
 				CardFrameworkSignalBus.drag_dropped.emit(self)
