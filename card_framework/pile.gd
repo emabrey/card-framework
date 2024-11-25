@@ -12,6 +12,7 @@ enum PileDirection {
 @export var max_stack_display := 6
 @export var card_face_up := true
 @export var layout := PileDirection.UP
+@export var set_top_accessible_only := true
 
 @export_group("drop_zone")
 @export_subgroup("Sensor")
@@ -57,6 +58,7 @@ func shuffle():
 	for i in _held_cards.size():
 		var card = _held_cards[i]
 		cards.move_child(card, i)
+	_update_target_positions()
 
 
 func _update_target_positions():
@@ -66,6 +68,12 @@ func _update_target_positions():
 		card.show_front = card_face_up
 		card.stored_z_index = 3000 + i if card.is_clicked else i
 		card.move(target_pos)
+		
+		if set_top_accessible_only:
+			if i == _held_cards.size() - 1:
+				card.can_be_interact_with = true
+			else:
+				card.can_be_interact_with = false
 
 
 func _calculate_offset(index: int) -> Vector2:
