@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5ysy3rd3deus"]
+
+[ext_resource type="Script" path="res://card_framework/card_factory.gd" id="1_vuwmp"]
+
+[node name="CardFactory" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_vuwmp")

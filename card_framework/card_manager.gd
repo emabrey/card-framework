@@ -39,3 +39,10 @@ func _on_card_dropped(card: Card) -> DropZone:
 				
 	card.return_card()
 	return null
+
+
+# XXX: Temp code
+func _on_card_create_button_pressed() -> void:
+	var card_factory := $CardFactory
+	var hand := $Hand
+	card_factory.create_card("diamond_2", hand)

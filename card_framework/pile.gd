@@ -42,7 +42,8 @@ func _card_dropped(card: Card, drop_zone: DropZone) -> void:
 	if self.drop_zone == drop_zone:
 		if !_held_cards.has(card):
 			add_card(card)
-		_update_target_positions()
+		else:
+			_update_target_positions()
 	elif _held_cards.has(card):
 		remove_card(card)
 
@@ -50,6 +51,7 @@ func _card_dropped(card: Card, drop_zone: DropZone) -> void:
 func add_card(card: Card) -> void:
 	Util.move_object(card, cards)
 	_held_cards.append(card)
+	_update_target_positions()
 
 
 func remove_card(card: Card) -> bool:

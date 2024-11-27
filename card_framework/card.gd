@@ -3,6 +3,7 @@ extends Control
 
 const HOLDING_Z_INDEX = 1000
 
+@export var card_name: String
 @export var card_size := Vector2(150, 210)
 @export var front_image: Texture2D
 @export var back_image: Texture2D
@@ -33,6 +34,7 @@ static var is_any_card_hovering := false
 
 @onready var front_face_texture := $FrontFace/TextureRect
 @onready var back_face_texture := $BackFace/TextureRect
+
 
 func _ready():	
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -70,6 +72,11 @@ func _process(delta):
 				CardFrameworkSignalBus.card_dropped.emit(self, target_drop_zone)
 				target_drop_zone = null
 
+
+func set_faces(front_face: Texture2D, back_face: Texture2D):
+	front_face_texture.texture = front_face
+	back_face_texture.texture = back_face
+	
 
 func return_card():
 	rotation = 0
