@@ -4,16 +4,19 @@ extends Control
 @export_group("drop_zone")
 @export var enable_drop_zone := true
 @export_subgroup("Sensor")
+##The size of the sensor. If not set, it will follow the size of the card.
 @export var sensor_size: Vector2
 @export var sensor_position: Vector2
 @export var sensor_color := Color(0.0, 0.0, 0.0, 0.0)
 @export var sensor_visibility := true
 
 @export_subgroup("Placement")
+##The size of the placement. If not set, it will follow the size of the card.
 @export var placement_size: Vector2
 @export var placement_position: Vector2
 @export var placement_color := Color(0.0, 0.0, 0.0, 0.0)
 @export var placement_visibility := true
+
 
 var _held_cards := []
 var drop_zone_scene = preload("drop_zone.tscn")
@@ -27,6 +30,13 @@ func _ready() -> void:
 	if enable_drop_zone:
 		drop_zone = drop_zone_scene.instantiate()
 		add_child(drop_zone)
+		# If sensor_size and placement_size are not set, they will follow the card size.
+		if is_instance_valid(get_parent()) and get_parent() is CardManager:
+			var card_manager = get_parent() as CardManager
+			if sensor_size == Vector2(0, 0):
+				sensor_size = card_manager.card_size
+			if placement_size == Vector2(0, 0):
+				placement_size = card_manager.card_size
 		drop_zone.set_sensor(sensor_size, sensor_position, sensor_color, sensor_visibility)
 		drop_zone.set_placement(placement_size, placement_position, placement_color, placement_visibility)
 

@@ -3,17 +3,33 @@ extends Control
 
 static var next_id = 0
 
-@export_group("Sensor")
-@export var sensor_size: Vector2
-@export var sensor_position: Vector2
-@export var sensor_color := Color(0.0, 0.0, 0.0, 0.0)
-@export var sensor_visibility := true
+var sensor_size: Vector2 : 
+	set(value):
+		sensor.size = value
+var sensor_position: Vector2 : 
+	set(value):
+		sensor.position = value
+var sensor_color := Color(0.0, 0.0, 0.0, 0.0) :
+	set(value):
+		sensor.color = value
+var sensor_visible := true :
+	set(value):
+		sensor.visible = value
+var placement_size: Vector2 : 
+	set(value):
+		placement.size = value
+var placement_position: Vector2 : 
+	set(value):
+		placement.position = value
+var placement_color := Color(0.0, 0.0, 0.0, 0.0) :
+	set(value):
+		placement.color = value
+var placement_visible := true :
+	set(value):
+		placement.visible = value
 
-@export_group("Placement")
-@export var placement_size: Vector2
-@export var placement_position: Vector2
-@export var placement_color := Color(0.0, 0.0, 0.0, 0.0)
-@export var placement_visibility := true
+var stored_sensor_position: Vector2
+var stored_placement_position: Vector2
 
 var unique_id: int
 var enabled := true
@@ -31,8 +47,6 @@ func _ready():
 	if is_instance_valid(get_parent()) and get_parent() is CardContainer:
 		parent_card_container = get_parent() as CardContainer
 	CardFrameworkSignalBus.drop_zone_added.emit(unique_id, self)
-	set_sensor(sensor_size, sensor_position, sensor_color, sensor_visibility)
-	set_placement(placement_size, placement_position, placement_color, placement_visibility)
 
 
 func _exit_tree() -> void:
@@ -58,18 +72,28 @@ func check_card_can_be_dropped(card: Card):
 	return _check_mouse_is_in_drop_zone()
 
 
-func set_sensor(size: Vector2, positon: Vector2, color: Color, visible: bool):
-	sensor.size = size
-	sensor.position = position
-	sensor.color = color
-	sensor.visible = visible
+func set_sensor(_size: Vector2, _positon: Vector2, _color: Color, _visible: bool):
+	sensor_size = _size
+	sensor_position = _positon
+	stored_sensor_position = _positon
+	sensor_color = _color
+	sensor_visible = _visible
 	
 
-func set_placement(size: Vector2, positon: Vector2, color: Color, visible: bool):
-	placement.size = size
-	placement.position = position
-	placement.color = color
-	placement.visible = visible
+func set_placement(_size: Vector2, _positon: Vector2, _color: Color, _visible: bool):
+	placement_size = _size
+	placement_position = _positon
+	stored_placement_position = _positon
+	placement_color = _color
+	placement_visible = _visible
+
+
+func change_sensor_position_with_offset(offset: Vector2):
+	sensor_position = stored_sensor_position + offset
+
+
+func change_placement_position_with_offset(offset: Vector2):
+	placement_position = stored_placement_position + offset
 
 
 func get_place_zone() -> Vector2:

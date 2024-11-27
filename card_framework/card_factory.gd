@@ -6,12 +6,12 @@ extends Node
 ##card information json directory
 @export var card_info_dir: String
 @export var back_image: Texture2D
-@export var card_size := Vector2(150, 210)
 
 var card_scene = preload("card.tscn")
 var cards_preload_dictionary = {}
+var card_size
 
-func _ready():	
+func _ready():
 	_preload_card_data()
 
 
