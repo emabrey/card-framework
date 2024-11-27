@@ -65,6 +65,12 @@ func _load_image(image_path: String) -> Texture2D:
 
 func _create_card_node(card_name: String, front_image: Texture2D, target: CardContainer) -> Card:
 	var card = card_scene.instantiate()
+	
+	if !target.card_can_be_added(card):
+		print("Card cannot be added: %s" % card_name)
+		card.queue_free()
+		return
+	
 	card.card_size = card_size
 	var cards_node = target.get_node("Cards")
 	cards_node.add_child(card)

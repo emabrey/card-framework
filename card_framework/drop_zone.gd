@@ -17,6 +17,7 @@ static var next_id = 0
 
 var unique_id: int
 var enabled := true
+var parent_card_container: CardContainer = null
 
 @onready var sensor := $Sensor
 @onready var placement := $Placement
@@ -27,6 +28,8 @@ func _init():
 	
 	
 func _ready():
+	if is_instance_valid(get_parent()) and get_parent() is CardContainer:
+		parent_card_container = get_parent() as CardContainer
 	CardFrameworkSignalBus.drop_zone_added.emit(unique_id, self)
 	set_sensor(sensor_size, sensor_position, sensor_color, sensor_visibility)
 	set_placement(placement_size, placement_position, placement_color, placement_visibility)
@@ -50,6 +53,8 @@ func set_enabled(_enabled: bool):
 
 
 func check_card_can_be_dropped(card: Card):
+	if parent_card_container != null and !parent_card_container.card_can_be_added(card):
+		return false
 	return _check_mouse_is_in_drop_zone()
 
 

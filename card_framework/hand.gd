@@ -21,6 +21,10 @@ func _ready() -> void:
 	size = hand_area
 
 
+func card_can_be_added(card: Card) -> bool:
+	return _held_cards.size() < max_hand_size
+
+
 func _update_target_positions():
 	for i in _held_cards.size():
 		var card = _held_cards[i]
