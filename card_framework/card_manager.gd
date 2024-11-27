@@ -1,8 +1,6 @@
 class_name CardManager
 extends Control
 
-@export var card_size := Vector2(150, 210)
-
 var drop_zone_dict := {}
 
 

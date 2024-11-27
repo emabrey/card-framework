@@ -1,22 +1,19 @@
 class_name CardFactory
 extends Node
 
-## card image asset directory
-@export
-var card_asset_dir: String
-
-## card information json directory
-@export
-var card_info_dir: String
-
-@export
-var back_image: Texture2D
+##card image asset directory
+@export var card_asset_dir: String
+##card information json directory
+@export var card_info_dir: String
+@export var back_image: Texture2D
+@export var card_size := Vector2(150, 210)
 
 var card_scene = preload("card.tscn")
 var cards_preload_dictionary = {}
 
-func _ready():
+func _ready():	
 	_preload_card_data()
+
 
 func create_card(card_name: String, target: CardContainer) -> Card:
 	# check card info is cached
@@ -24,19 +21,19 @@ func create_card(card_name: String, target: CardContainer) -> Card:
 		var card_info = cards_preload_dictionary[card_name]["info"]
 		var front_image = cards_preload_dictionary[card_name]["texture"]
 		return _create_card_node(card_info.name, front_image, target)
-		
-	var card_info = _load_card_info(card_name)
-	if card_info == null:
-		push_error("Card info not found for card: %s" % card_name)
-		return null
+	else:
+		var card_info = _load_card_info(card_name)
+		if card_info == null:
+			push_error("Card info not found for card: %s" % card_name)
+			return null
 
-	var front_image_path = card_asset_dir + "/" + card_info.front_image
-	var front_image = _load_image(front_image_path)
-	if front_image == null:
-		push_error("Card image not found: %s" % front_image_path)
-		return null
+		var front_image_path = card_asset_dir + "/" + card_info.front_image
+		var front_image = _load_image(front_image_path)
+		if front_image == null:
+			push_error("Card image not found: %s" % front_image_path)
+			return null
 
-	return _create_card_node(card_info.name, front_image, target)
+		return _create_card_node(card_info.name, front_image, target)
 
 
 func _load_card_info(card_name: String) -> Dictionary:
@@ -68,6 +65,7 @@ func _load_image(image_path: String) -> Texture2D:
 
 func _create_card_node(card_name: String, front_image: Texture2D, target: CardContainer) -> Card:
 	var card = card_scene.instantiate()
+	card.card_size = card_size
 	var cards_node = target.get_node("Cards")
 	cards_node.add_child(card)
 	target.add_card(card)
