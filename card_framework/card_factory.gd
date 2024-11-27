@@ -18,7 +18,7 @@ var cards_preload_dictionary = {}
 func _ready():
 	_preload_card_data()
 
-func create_card(card_name: String, target: Node) -> Card:
+func create_card(card_name: String, target: CardContainer) -> Card:
 	# check card info is cached
 	if cards_preload_dictionary.has(card_name):
 		var card_info = cards_preload_dictionary[card_name]["info"]
@@ -66,10 +66,7 @@ func _load_image(image_path: String) -> Texture2D:
 	return texture
 
 
-func _create_card_node(card_name: String, front_image: Texture2D, target: Node) -> Card:
-	if not target.has_node("Cards") or not target.has_method("add_card"):
-		return null
-	
+func _create_card_node(card_name: String, front_image: Texture2D, target: CardContainer) -> Card:
 	var card = card_scene.instantiate()
 	var cards_node = target.get_node("Cards")
 	cards_node.add_child(card)
