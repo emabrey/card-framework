@@ -44,7 +44,8 @@ func _card_dropped(card: Card, drop_zone: DropZone) -> void:
 	if self.drop_zone == drop_zone:
 		if !_held_cards.has(card):
 			add_card(card)
-		_update_target_positions()
+		else:
+			_update_target_positions()
 	elif _held_cards.has(card):
 		remove_card(card)
 
@@ -52,6 +53,7 @@ func _card_dropped(card: Card, drop_zone: DropZone) -> void:
 func add_card(card: Card) -> void:
 	Util.move_object(card, cards)
 	_held_cards.append(card)
+	_update_target_positions()
 
 
 func remove_card(card: Card) -> bool:
@@ -78,3 +80,4 @@ func _update_target_positions():
 			card.move_rotation(deg_to_rad(hand_rotation_curve.sample(hand_ratio)))
 		card.move(target_pos)
 		card.show_front = card_face_up
+		card.stored_z_index = i
