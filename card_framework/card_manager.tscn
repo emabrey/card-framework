@@ -122,7 +122,7 @@ placement_color = Color(0, 0, 1, 1)
 
 [node name="CardFactory" parent="." instance=ExtResource("13_siw2h")]
 card_asset_dir = "res://freecell/assets/images/cards"
-card_info_dir = "freecell/card_info"
+card_info_dir = "res://freecell/card_info"
 back_image = ExtResource("4_br0t2")
 
 [connection signal="pressed" from="CardCreateButton" to="." method="_on_card_create_button_pressed"]
