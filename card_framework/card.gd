@@ -85,10 +85,10 @@ func return_card():
 	is_moving_to_destination = true
 
 
-func move(destination: Vector2):
+func move(target_destination: Vector2):
 	rotation = 0
 	is_moving_to_destination = true
-	self.destination = destination
+	self.destination = target_destination
 
 	
 func move_to_drop_zone(drop_zone: DropZone):

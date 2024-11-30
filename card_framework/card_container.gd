@@ -41,8 +41,8 @@ func _ready() -> void:
 		drop_zone.set_placement(placement_size, placement_position, placement_color, placement_visibility)
 
 
-func _card_dropped(card: Card, drop_zone: DropZone) -> void:
-	if enable_drop_zone and self.drop_zone == drop_zone:
+func _card_dropped(card: Card, target_drop_zone: DropZone) -> void:
+	if enable_drop_zone and self.drop_zone == target_drop_zone:
 		if !_held_cards.has(card):
 			add_card(card)
 		else:
@@ -67,7 +67,7 @@ func remove_card(card: Card) -> bool:
 
 
 
-func card_can_be_added(card: Card) -> bool:
+func card_can_be_added(_card: Card) -> bool:
 	return true
 
 

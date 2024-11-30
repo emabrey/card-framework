@@ -85,11 +85,9 @@ func _load_card_info(card_name: String) -> Dictionary:
 
 
 func _load_image(image_path: String) -> Texture2D:
-	if !FileAccess.file_exists(image_path):
-		return null
-		
-	var image = Image.load_from_file(image_path)
-	var texture = ImageTexture.create_from_image(image)
+	var texture = load(image_path) as Texture2D
+	if texture == null:
+		push_error("Failed to load image resource: %s" % image_path)
 	return texture
 
 

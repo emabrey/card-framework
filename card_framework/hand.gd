@@ -21,7 +21,7 @@ func _ready() -> void:
 	size = hand_area
 
 
-func card_can_be_added(card: Card) -> bool:
+func card_can_be_added(_card: Card) -> bool:
 	return _held_cards.size() < max_hand_size
 
 
@@ -32,6 +32,7 @@ func _update_target_positions():
 		if _held_cards.size() > 1:
 			hand_ratio = float(i) / float(_held_cards.size() - 1)
 		var target_pos = global_position
+		@warning_ignore("integer_division")
 		var card_spacing = max_hand_spread / (_held_cards.size() + 1)
 		target_pos.x += (i + 1) * card_spacing - max_hand_spread / 2.0
 		if hand_vertical_curve:
