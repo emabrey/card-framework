@@ -16,7 +16,7 @@ func create_card(card_name: String, target: CardContainer) -> Card:
 	if cards_preload_dictionary.has(card_name):
 		var card_info = cards_preload_dictionary[card_name]["info"]
 		var front_image = cards_preload_dictionary[card_name]["texture"]
-		return _create_card_node(card_info.name, front_image, target)
+		return _create_card_node(card_info.name, front_image, target, card_info)
 	else:
 		var card_info = _load_card_info(card_name)
 		if card_info == null or card_info == {}:
@@ -29,7 +29,7 @@ func create_card(card_name: String, target: CardContainer) -> Card:
 			push_error("Card image not found: %s" % front_image_path)
 			return null
 
-		return _create_card_node(card_info.name, front_image, target)
+		return _create_card_node(card_info.name, front_image, target, card_info)
 
 
 func preload_card_data() -> void:
@@ -93,7 +93,7 @@ func _load_image(image_path: String) -> Texture2D:
 	return texture
 
 
-func _create_card_node(card_name: String, front_image: Texture2D, target: CardContainer) -> Card:
+func _create_card_node(card_name: String, front_image: Texture2D, target: CardContainer, card_info: Dictionary) -> Card:
 	var card = card_scene.instantiate()
 	
 	if !target.card_can_be_added(card):
@@ -101,6 +101,7 @@ func _create_card_node(card_name: String, front_image: Texture2D, target: CardCo
 		card.queue_free()
 		return
 	
+	card.card_info = card_info
 	card.card_size = card_size
 	var cards_node = target.get_node("Cards")
 	cards_node.add_child(card)

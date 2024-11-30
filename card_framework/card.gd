@@ -20,6 +20,8 @@ const HOLDING_Z_INDEX = 1000
 @export var can_be_interact_with := true
 @export var hover_distance := 10
 
+var card_info: Dictionary
+
 var is_hovering := false
 var is_clicked := false
 var is_holding := false
