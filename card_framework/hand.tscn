@@ -23,6 +23,4 @@ hand_vertical_curve = SubResource("Curve_8dbo5")
 
 [node name="Cards" type="Control" parent="."]
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 mouse_filter = 1
