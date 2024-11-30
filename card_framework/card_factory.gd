@@ -1,18 +1,14 @@
 class_name CardFactory
 extends Node
 
-##card image asset directory
-@export var card_asset_dir: String
-##card information json directory
-@export var card_info_dir: String
-@export var back_image: Texture2D
 
 var card_scene = preload("card.tscn")
 var cards_preload_dictionary = {}
-var card_size
 
-func _ready():
-	_preload_card_data()
+var card_asset_dir: String
+var card_info_dir: String
+var card_size: Vector2
+var back_image: Texture2D
 
 
 func create_card(card_name: String, target: CardContainer) -> Card:
@@ -23,7 +19,7 @@ func create_card(card_name: String, target: CardContainer) -> Card:
 		return _create_card_node(card_info.name, front_image, target)
 	else:
 		var card_info = _load_card_info(card_name)
-		if card_info == null:
+		if card_info == null or card_info == {}:
 			push_error("Card info not found for card: %s" % card_name)
 			return null
 
@@ -34,6 +30,40 @@ func create_card(card_name: String, target: CardContainer) -> Card:
 			return null
 
 		return _create_card_node(card_info.name, front_image, target)
+
+
+func preload_card_data() -> void:
+	var dir = DirAccess.open(card_info_dir)
+	if dir == null:
+		push_error("Failed to open directory: %s" % card_info_dir)
+		return
+
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	while file_name != "":
+		if !file_name.ends_with(".json"):
+			file_name = dir.get_next()
+			continue
+
+		var card_name = file_name.get_basename()
+		var card_info = _load_card_info(card_name)
+		if card_info == null:
+			push_error("Failed to load card info for %s" % card_name)
+			continue
+
+		var front_image_path = card_asset_dir + "/" + card_info.get("front_image", "")
+		var front_image_texture = _load_image(front_image_path)
+		if front_image_texture == null:
+			push_error("Failed to load card image: %s" % front_image_path)
+			continue
+
+		cards_preload_dictionary[card_name] = {
+			"info": card_info,
+			"texture": front_image_texture
+		}
+		print("Preloaded card data:", cards_preload_dictionary[card_name])
+		
+		file_name = dir.get_next()
 
 
 func _load_card_info(card_name: String) -> Dictionary:
@@ -79,36 +109,3 @@ func _create_card_node(card_name: String, front_image: Texture2D, target: CardCo
 	card.set_faces(front_image, back_image)
 
 	return card
-
-func _preload_card_data() -> void:
-	var dir = DirAccess.open(card_info_dir)
-	if dir == null:
-		push_error("Failed to open directory: %s" % card_info_dir)
-		return
-
-	dir.list_dir_begin()
-	var file_name = dir.get_next()
-	while file_name != "":
-		if !file_name.ends_with(".json"):
-			file_name = dir.get_next()
-			continue
-
-		var card_name = file_name.get_basename()
-		var card_info = _load_card_info(card_name)
-		if card_info == null:
-			push_error("Failed to load card info for %s" % card_name)
-			continue
-
-		var front_image_path = card_asset_dir + "/" + card_info.get("front_image", "")
-		var front_image_texture = _load_image(front_image_path)
-		if front_image_texture == null:
-			push_error("Failed to load card image: %s" % front_image_path)
-			continue
-
-		cards_preload_dictionary[card_name] = {
-			"info": card_info,
-			"texture": front_image_texture
-		}
-		print("Preloaded card data:", cards_preload_dictionary[card_name])
-		
-		file_name = dir.get_next()

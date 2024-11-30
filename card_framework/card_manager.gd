@@ -2,6 +2,11 @@ class_name CardManager
 extends Control
 
 @export var card_size := Vector2(150, 210)
+##card image asset directory
+@export var card_asset_dir: String
+##card information json directory
+@export var card_info_dir: String
+@export var back_image: Texture2D
 
 var drop_zone_dict := {}
 
@@ -15,6 +20,10 @@ func _init() -> void:
 
 func _ready() -> void:
 	card_factory.card_size = card_size
+	card_factory.card_asset_dir = card_asset_dir
+	card_factory.card_info_dir = card_info_dir
+	card_factory.back_image = back_image
+	card_factory.preload_card_data()
 
 
 func _on_drop_zone_added(id: int, drop_zone: DropZone):
@@ -36,10 +45,3 @@ func _on_card_dropped(card: Card) -> DropZone:
 				
 	card.return_card()
 	return null
-
-
-# XXX: Temp code
-func _on_card_create_button_pressed() -> void:
-	var card_factory := $CardFactory
-	var hand := $Hand
-	card_factory.create_card("diamond_2", hand)
