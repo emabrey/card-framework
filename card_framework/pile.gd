@@ -52,6 +52,7 @@ func _update_target_positions():
 	
 	if enable_drop_zone and align_drop_zone_with_top_card:
 		drop_zone.change_sensor_position_with_offset(last_offset)
+		drop_zone.change_placement_position_with_offset(last_offset)
 
 
 func _calculate_offset(index: int) -> Vector2:
