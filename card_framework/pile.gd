@@ -12,7 +12,10 @@ enum PileDirection {
 @export var max_stack_display := 6
 @export var card_face_up := true
 @export var layout := PileDirection.UP
-@export var set_top_accessible_only := true
+## Determines whether any card in the pile can be moved
+@export var allow_card_movement: bool = true
+## Restricts movement to only the top card of the pile (requires allow_card_movement to be true)
+@export var restrict_to_top_card: bool = true
 @export var align_drop_zone_with_top_card := true
 
 func get_top_card() -> Card:
@@ -39,7 +42,9 @@ func _update_target_positions():
 		card.move_rotation(0)
 		card.move(target_pos)
 		
-		if set_top_accessible_only:
+		if not allow_card_movement: 
+			card.can_be_interact_with = false
+		elif restrict_to_top_card:
 			if i == _held_cards.size() - 1:
 				card.can_be_interact_with = true
 			else:
