@@ -67,9 +67,9 @@ func set_enabled(_enabled: bool):
 
 
 func check_card_can_be_dropped(card: Card):
-	if parent_card_container != null and !parent_card_container.card_can_be_added(card):
+	if parent_card_container != null and not _check_mouse_is_in_drop_zone():
 		return false
-	return _check_mouse_is_in_drop_zone()
+	return parent_card_container.card_can_be_added(card)
 
 
 func set_sensor(_size: Vector2, _positon: Vector2, _color: Color, _visible: bool):
