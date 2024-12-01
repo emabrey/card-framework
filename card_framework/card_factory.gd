@@ -1,14 +1,27 @@
+@tool
 class_name CardFactory
 extends Node
 
 
-var card_scene = preload("card.tscn")
+@export var default_card_scene: PackedScene
 var cards_preload_dictionary = {}
 
 var card_asset_dir: String
 var card_info_dir: String
 var card_size: Vector2
 var back_image: Texture2D
+
+
+func _ready() -> void:
+	if default_card_scene == null:
+		push_error("default_card_scene is not assigned!")
+		return
+		
+	var temp_instance = default_card_scene.instantiate()
+	if temp_instance is not Card:
+		push_error("Invalid node type! default_card_scene must reference a Card.")
+		default_card_scene = null
+	temp_instance.queue_free()
 
 
 func create_card(card_name: String, target: CardContainer) -> Card:
@@ -109,5 +122,5 @@ func _create_card_node(card_name: String, front_image: Texture2D, target: CardCo
 
 	return card
 
-func _generate_card(card_info: Dictionary) -> Card:
-	return card_scene.instantiate()
+func _generate_card(_card_info: Dictionary) -> Card:
+	return default_card_scene.instantiate()
