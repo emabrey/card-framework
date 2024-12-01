@@ -5,4 +5,4 @@
 
 [node name="CardFactory" type="Node"]
 script = ExtResource("1_aaxsy")
-card_scene = ExtResource("2_htoec")
+default_card_scene = ExtResource("2_htoec")

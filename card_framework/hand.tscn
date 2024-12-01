@@ -20,7 +20,3 @@ mouse_filter = 1
 script = ExtResource("1_hrxjc")
 hand_rotation_curve = SubResource("Curve_lsli3")
 hand_vertical_curve = SubResource("Curve_8dbo5")
-
-[node name="Cards" type="Control" parent="."]
-anchors_preset = 0
-mouse_filter = 1

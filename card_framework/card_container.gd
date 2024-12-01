@@ -21,11 +21,19 @@ extends Control
 var _held_cards := []
 var drop_zone_scene = preload("drop_zone.tscn")
 var drop_zone = null
-
-@onready var cards := $Cards
+var cards
 
 
 func _ready() -> void:
+	# Check if 'Cards' node already exists
+	if has_node("Cards"):
+		cards = $Cards
+	else:
+		cards = Control.new()
+		cards.name = "Cards"
+		cards.mouse_filter = Control.MOUSE_FILTER_STOP
+		add_child(cards)
+	
 	CardFrameworkSignalBus.card_dropped.connect(_card_dropped)
 	if enable_drop_zone:
 		drop_zone = drop_zone_scene.instantiate()
