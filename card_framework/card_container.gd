@@ -74,6 +74,11 @@ func remove_card(card: Card) -> bool:
 	return true
 
 
+func clear_cards():
+	for card in _held_cards:
+		Util.remove_object(card)
+	_held_cards.clear()
+
 
 func card_can_be_added(_card: Card) -> bool:
 	return true

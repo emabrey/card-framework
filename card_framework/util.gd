@@ -8,3 +8,8 @@ func move_object(target: Node, to: Node):
 		target.global_position = global_pos
 	else:
 		to.add_child(target)
+
+func remove_object(target: Node):
+	if target.get_parent() != null:
+		target.get_parent().remove_child(target)
+	target.queue_free()
