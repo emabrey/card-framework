@@ -9,9 +9,9 @@ var sensor_size: Vector2 :
 var sensor_position: Vector2 : 
 	set(value):
 		sensor.position = value
-var sensor_color := Color(0.0, 0.0, 0.0, 0.0) :
+var sensor_texture : Texture :
 	set(value):
-		sensor.color = value
+		sensor.texture = value
 var sensor_visible := true :
 	set(value):
 		sensor.visible = value
@@ -21,9 +21,9 @@ var placement_size: Vector2 :
 var placement_position: Vector2 : 
 	set(value):
 		placement.position = value
-var placement_color := Color(0.0, 0.0, 0.0, 0.0) :
+var placement_texture : Texture :
 	set(value):
-		placement.color = value
+		placement.texture = value
 var placement_visible := true :
 	set(value):
 		placement.visible = value
@@ -35,8 +35,8 @@ var unique_id: int
 var enabled := true
 var parent_card_container: CardContainer = null
 
-@onready var sensor := $Sensor
-@onready var placement := $Placement
+var sensor: Control
+var placement: Control
 
 func _init():
 	unique_id = next_id
@@ -72,19 +72,31 @@ func check_card_can_be_dropped(card: Card):
 	return parent_card_container.card_can_be_added(card)
 
 
-func set_sensor(_size: Vector2, _positon: Vector2, _color: Color, _visible: bool):
+func set_sensor(_size: Vector2, _positon: Vector2, _texture: Texture, _visible: bool):
+	if sensor == null:
+		sensor = TextureRect.new()
+		sensor.name = "Sensor"
+		sensor.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sensor.z_index = -1000
+		add_child(sensor)
 	sensor_size = _size
 	sensor_position = _positon
 	stored_sensor_position = _positon
-	sensor_color = _color
+	sensor_texture = _texture
 	sensor_visible = _visible
 	
 
-func set_placement(_size: Vector2, _positon: Vector2, _color: Color, _visible: bool):
+func set_placement(_size: Vector2, _positon: Vector2, _texture: Texture, _visible: bool):
+	if placement == null:
+		placement = TextureRect.new()
+		placement.name = "Placement"
+		placement.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		placement.z_index = -1000
+		add_child(placement)
 	placement_size = _size
 	placement_position = _positon
 	stored_placement_position = _positon
-	placement_color = _color
+	placement_texture = _texture
 	placement_visible = _visible
 
 

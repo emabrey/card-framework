@@ -7,14 +7,14 @@ extends Control
 ##The size of the sensor. If not set, it will follow the size of the card.
 @export var sensor_size: Vector2
 @export var sensor_position: Vector2
-@export var sensor_color := Color(0.0, 0.0, 0.0, 0.0)
+@export var sensor_texture: Texture
 @export var sensor_visibility := true
 
 @export_subgroup("Placement")
 ##The size of the placement. If not set, it will follow the size of the card.
 @export var placement_size: Vector2
 @export var placement_position: Vector2
-@export var placement_color := Color(0.0, 0.0, 0.0, 0.0)
+@export var placement_texture: Texture
 @export var placement_visibility := true
 
 
@@ -45,8 +45,8 @@ func _ready() -> void:
 				sensor_size = card_manager.card_size
 			if placement_size == Vector2(0, 0):
 				placement_size = card_manager.card_size
-		drop_zone.set_sensor(sensor_size, sensor_position, sensor_color, sensor_visibility)
-		drop_zone.set_placement(placement_size, placement_position, placement_color, placement_visibility)
+		drop_zone.set_sensor(sensor_size, sensor_position, sensor_texture, sensor_visibility)
+		drop_zone.set_placement(placement_size, placement_position, placement_texture, placement_visibility)
 
 
 func _card_dropped(card: Card, target_drop_zone: DropZone) -> void:
