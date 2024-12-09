@@ -55,7 +55,8 @@ func _exit_tree() -> void:
 
 func _check_mouse_is_in_drop_zone() -> bool:
 	var mouse_position = get_global_mouse_position()
-	return sensor.get_global_rect().has_point(mouse_position)
+	var result = sensor.get_global_rect().has_point(mouse_position)
+	return result
 
 
 func set_enabled(_enabled: bool):

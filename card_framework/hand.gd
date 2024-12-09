@@ -25,6 +25,12 @@ func card_can_be_added(_card: Card) -> bool:
 	return _held_cards.size() < max_hand_size
 
 
+func _update_target_z_index():
+	for i in _held_cards.size():
+		var card = _held_cards[i]
+		card.stored_z_index = i
+
+
 func _update_target_positions():
 	for i in _held_cards.size():
 		var card = _held_cards[i]
@@ -41,4 +47,3 @@ func _update_target_positions():
 			card.move_rotation(deg_to_rad(hand_rotation_curve.sample(hand_ratio)))
 		card.move(target_pos)
 		card.show_front = card_face_up
-		card.stored_z_index = i

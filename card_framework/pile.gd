@@ -18,6 +18,8 @@ enum PileDirection {
 @export var restrict_to_top_card: bool = true
 @export var align_drop_zone_with_top_card := true
 
+const PILE_Z_INDEX := 3000
+
 func get_top_card() -> Card:
 	return _held_cards.back()
 
@@ -30,6 +32,12 @@ func shuffle():
 	_update_target_positions()
 
 
+func _update_target_z_index():
+	for i in _held_cards.size():
+		var card = _held_cards[i]
+		card.stored_z_index = PILE_Z_INDEX + i if card.is_clicked else i
+
+
 func _update_target_positions():
 	var last_offset: Vector2
 	for i in _held_cards.size():
@@ -38,7 +46,6 @@ func _update_target_positions():
 		last_offset = offset
 		var target_pos = position + offset
 		card.show_front = card_face_up
-		card.stored_z_index = 3000 + i if card.is_clicked else i
 		card.move_rotation(0)
 		card.move(target_pos)
 		

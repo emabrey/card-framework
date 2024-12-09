@@ -54,24 +54,32 @@ func _card_dropped(card: Card, target_drop_zone: DropZone) -> void:
 		if !_held_cards.has(card):
 			add_card(card)
 		else:
+			_update_target_z_index()
 			_update_target_positions()
 	elif _held_cards.has(card):
 		remove_card(card)
 
 
 func add_card(card: Card) -> void:
+	_update_target_z_index()
 	Util.move_object(card, cards)
 	_held_cards.append(card)
 	_update_target_positions()
 
 
 func remove_card(card: Card) -> bool:
-	var index = _held_cards.find(card);
+	var index = _held_cards.find(card)
 	if index == -1:
 		return false
 	_held_cards.remove_at(_held_cards.find(card))
+	_update_target_z_index()
 	_update_target_positions()
 	return true
+
+
+func has_card(card: Card) -> bool:
+	var index = _held_cards.find(card)
+	return index != -1
 
 
 func clear_cards():
@@ -82,6 +90,10 @@ func clear_cards():
 
 func card_can_be_added(_card: Card) -> bool:
 	return true
+
+
+func _update_target_z_index():
+	pass
 
 
 func _update_target_positions():

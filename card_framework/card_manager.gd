@@ -74,14 +74,15 @@ func _on_drop_zone_deleted(id: int):
 	drop_zone_dict.erase(id)
 
 
-func _on_card_dropped(card: Card) -> DropZone:
-	for key in drop_zone_dict.keys():
-		var drop_zone = drop_zone_dict[key]
-		if drop_zone.enabled:
-			var result = drop_zone.check_card_can_be_dropped(card)
-			if result:
-				card.move_to_drop_zone(drop_zone)
-				return drop_zone
-				
+func _on_card_dropped(card: Card, itself_dropped: bool) -> DropZone:
+	if itself_dropped:
+		for key in drop_zone_dict.keys():
+			var drop_zone = drop_zone_dict[key]
+			if drop_zone.enabled:
+				var result = drop_zone.check_card_can_be_dropped(card)
+				if result:
+					card.move_to_drop_zone(drop_zone)
+					return drop_zone
+	
 	card.return_card()
 	return null
