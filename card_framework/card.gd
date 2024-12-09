@@ -67,7 +67,8 @@ func _process(delta):
 		
 	if is_moving_to_destination:
 		global_position = global_position.move_toward(destination, return_speed * delta)
-		if global_position == destination:
+		if global_position.distance_to(destination) < 0.001:
+			global_position = destination
 			is_moving_to_destination = false
 			end_hovering(false)
 			z_index = stored_z_index
