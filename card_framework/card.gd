@@ -28,6 +28,7 @@ var is_holding := false
 var stored_z_index: int :
 	set(value):
 		z_index = value
+		stored_z_index = value
 var is_moving_to_destination := false
 var current_holding_mouse_position: Vector2
 var destination: Vector2
@@ -66,6 +67,7 @@ func _process(delta):
 		global_position = get_global_mouse_position() - current_holding_mouse_position
 		
 	if is_moving_to_destination:
+		z_index = stored_z_index + HOLDING_Z_INDEX
 		global_position = global_position.move_toward(destination, return_speed * delta)
 		if global_position.distance_to(destination) < 0.001:
 			global_position = destination
@@ -110,7 +112,7 @@ func start_hovering():
 	if not is_hovering:
 		is_hovering = true
 		is_any_card_hovering = true
-		z_index = z_index + HOLDING_Z_INDEX
+		z_index = stored_z_index + HOLDING_Z_INDEX
 		position.y -= hover_distance
 
 
@@ -126,7 +128,7 @@ func end_hovering(restore_card_position: bool):
 func set_holding():
 	is_holding = true
 	current_holding_mouse_position = get_local_mouse_position()
-	z_index = z_index + HOLDING_Z_INDEX
+	z_index = stored_z_index + HOLDING_Z_INDEX
 	rotation = 0
 
 

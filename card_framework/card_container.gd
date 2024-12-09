@@ -61,9 +61,9 @@ func _card_dropped(card: Card, target_drop_zone: DropZone) -> void:
 
 
 func add_card(card: Card) -> void:
-	_update_target_z_index()
 	Util.move_object(card, cards)
 	_held_cards.append(card)
+	_update_target_z_index()
 	_update_target_positions()
 
 
