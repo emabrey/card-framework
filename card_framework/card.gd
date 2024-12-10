@@ -136,8 +136,6 @@ func set_holding():
 
 
 func set_releasing():
-	if is_holding and card_container != null:
-		card_container.release_holding_cards()
 	is_holding = false
 
 
@@ -173,7 +171,8 @@ func _on_gui_input(event: InputEvent):
 		if mouse_event.is_released():
 			is_clicked = false
 			CardFrameworkSignalBus.card_released.emit(self)
-			set_releasing()
+			if card_container != null:
+				card_container.release_holding_cards()
 
 
 func _on_drag_dropped(_cards: Array):

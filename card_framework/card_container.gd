@@ -100,7 +100,6 @@ func has_card(card: Card) -> bool:
 
 func clear_cards():
 	for card in _held_cards:
-		card.container = null
 		Util.remove_object(card)
 	_held_cards.clear()
 
@@ -123,6 +122,8 @@ func hold_card(card: Card):
 func release_holding_cards():
 	if _holding_cards.size() == 0:
 		return
+	for card in _holding_cards:
+		card.set_releasing()
 	var copied_holding_cards = _holding_cards.duplicate()
 	CardFrameworkSignalBus.drag_dropped.emit(copied_holding_cards)
 	_holding_cards.clear()
