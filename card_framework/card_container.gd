@@ -1,6 +1,8 @@
 class_name CardContainer
 extends Control
 
+static var next_id = 0
+
 @export_group("drop_zone")
 @export var enable_drop_zone := true
 @export_subgroup("Sensor")
@@ -18,26 +20,34 @@ extends Control
 @export var placement_visibility := true
 
 
+var unique_id: int
 var _held_cards := []
+var _holding_cards := []
 var drop_zone_scene = preload("drop_zone.tscn")
 var drop_zone = null
-var cards
+var cards_node
+
+
+func _init():
+	unique_id = next_id
+	next_id += 1
 
 
 func _ready() -> void:
 	# Check if 'Cards' node already exists
 	if has_node("Cards"):
-		cards = $Cards
+		cards_node = $Cards
 	else:
-		cards = Control.new()
-		cards.name = "Cards"
-		cards.mouse_filter = Control.MOUSE_FILTER_STOP
-		add_child(cards)
+		cards_node = Control.new()
+		cards_node.name = "Cards"
+		cards_node.mouse_filter = Control.MOUSE_FILTER_STOP
+		add_child(cards_node)
 	
 	CardFrameworkSignalBus.card_dropped.connect(_card_dropped)
 	if enable_drop_zone:
 		drop_zone = drop_zone_scene.instantiate()
 		add_child(drop_zone)
+		drop_zone.parent_card_container = self
 		# If sensor_size and placement_size are not set, they will follow the card size.
 		if is_instance_valid(get_parent()) and get_parent() is CardManager:
 			var card_manager = get_parent() as CardManager
@@ -47,10 +57,15 @@ func _ready() -> void:
 				placement_size = card_manager.card_size
 		drop_zone.set_sensor(sensor_size, sensor_position, sensor_texture, sensor_visibility)
 		drop_zone.set_placement(placement_size, placement_position, placement_texture, placement_visibility)
+	CardFrameworkSignalBus.card_container_added.emit(unique_id, self)
 
 
-func _card_dropped(card: Card, target_drop_zone: DropZone) -> void:
-	if enable_drop_zone and self.drop_zone == target_drop_zone:
+func _exit_tree() -> void:
+	CardFrameworkSignalBus.card_container_deleted.emit(unique_id)
+
+
+func _card_dropped(card: Card, target: CardContainer) -> void:
+	if enable_drop_zone and target == self:
 		if !_held_cards.has(card):
 			add_card(card)
 		else:
@@ -61,7 +76,8 @@ func _card_dropped(card: Card, target_drop_zone: DropZone) -> void:
 
 
 func add_card(card: Card) -> void:
-	Util.move_object(card, cards)
+	Util.move_object(card, cards_node)
+	card.card_container = self
 	_held_cards.append(card)
 	_update_target_z_index()
 	_update_target_positions()
@@ -84,11 +100,35 @@ func has_card(card: Card) -> bool:
 
 func clear_cards():
 	for card in _held_cards:
+		card.container = null
 		Util.remove_object(card)
 	_held_cards.clear()
 
 
-func card_can_be_added(_card: Card) -> bool:
+func check_card_can_be_dropped(cards: Array) -> bool:
+	if not drop_zone.check_mouse_is_in_drop_zone():
+		return false
+	return _card_can_be_added(cards)
+
+
+func move_cards(cards: Array):
+	for card in cards:
+		card.move_to_card_container(self)
+
+
+func hold_card(card: Card):
+	_holding_cards.append(card)
+
+
+func release_holding_cards():
+	if _holding_cards.size() == 0:
+		return
+	var copied_holding_cards = _holding_cards.duplicate()
+	CardFrameworkSignalBus.drag_dropped.emit(copied_holding_cards)
+	_holding_cards.clear()
+
+
+func _card_can_be_added(_cards: Array) -> bool:
 	return true
 
 

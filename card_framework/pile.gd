@@ -28,7 +28,7 @@ func shuffle():
 	_held_cards.shuffle()
 	for i in range(_held_cards.size()):
 		var card = _held_cards[i]
-		cards.move_child(card, i)
+		cards_node.move_child(card, i)
 	_update_target_positions()
 
 

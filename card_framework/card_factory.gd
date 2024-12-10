@@ -107,7 +107,7 @@ func _load_image(image_path: String) -> Texture2D:
 func _create_card_node(card_name: String, front_image: Texture2D, target: CardContainer, card_info: Dictionary) -> Card:
 	var card = _generate_card(card_info)
 	
-	if !target.card_can_be_added(card):
+	if !target._card_can_be_added([card]):
 		print("Card cannot be added: %s" % card_name)
 		card.queue_free()
 		return

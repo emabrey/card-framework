@@ -21,8 +21,9 @@ func _ready() -> void:
 	size = hand_area
 
 
-func card_can_be_added(_card: Card) -> bool:
-	return _held_cards.size() < max_hand_size
+func _card_can_be_added(_cards: Array) -> bool:
+	var card_size = _cards.size()
+	return _held_cards.size() + card_size <= max_hand_size
 
 
 func _update_target_z_index():

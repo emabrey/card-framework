@@ -12,15 +12,15 @@ extends Control
 ##card factory scene
 @export var card_factory_scene: PackedScene
 var card_factory: CardFactory
-var drop_zone_dict := {}
+var card_container_dict := {}
 
 func _init() -> void:
 	if Engine.is_editor_hint():
 		return
 
-	CardFrameworkSignalBus.drop_zone_added.connect(_on_drop_zone_added)
-	CardFrameworkSignalBus.drop_zone_deleted.connect(_on_drop_zone_deleted)
-	CardFrameworkSignalBus.drag_dropped.connect(_on_card_dropped)
+	CardFrameworkSignalBus.card_container_added.connect(_on_card_container_added)
+	CardFrameworkSignalBus.card_container_deleted.connect(_on_card_container_deleted)
+	CardFrameworkSignalBus.drag_dropped.connect(_on_drag_dropped)
 	
 
 func _ready() -> void:
@@ -66,23 +66,23 @@ func _pre_process_exported_variables() -> bool:
 	return true
 
 
-func _on_drop_zone_added(id: int, drop_zone: DropZone):
-	drop_zone_dict[id] = drop_zone
+func _on_card_container_added(id: int, card_container: CardContainer):
+	card_container_dict[id] = card_container
 
 
-func _on_drop_zone_deleted(id: int):
-	drop_zone_dict.erase(id)
+func _on_card_container_deleted(id: int):
+	card_container_dict.erase(id)
 
 
-func _on_card_dropped(card: Card, itself_dropped: bool) -> DropZone:
-	if itself_dropped:
-		for key in drop_zone_dict.keys():
-			var drop_zone = drop_zone_dict[key]
-			if drop_zone.enabled:
-				var result = drop_zone.check_card_can_be_dropped(card)
-				if result:
-					card.move_to_drop_zone(drop_zone)
-					return drop_zone
+func _on_drag_dropped(cards: Array):
+	if cards.size() == 0:
+		return
+	for key in card_container_dict.keys():
+		var card_container = card_container_dict[key]
+		var result = card_container.check_card_can_be_dropped(cards)
+		if result:
+			card_container.move_cards(cards)
+			return
 	
-	card.return_card()
-	return null
+	for card in cards:
+		card.return_card()

@@ -33,7 +33,8 @@ var is_moving_to_destination := false
 var current_holding_mouse_position: Vector2
 var destination: Vector2
 var destination_degree: float
-var target_drop_zone: DropZone
+var target_container: CardContainer
+var card_container: CardContainer
 
 static var is_any_card_hovering := false
 
@@ -76,9 +77,9 @@ func _process(delta):
 			z_index = stored_z_index
 			CardFrameworkSignalBus.card_move_done.emit(self)
 			rotation = destination_degree
-			if target_drop_zone != null:
-				CardFrameworkSignalBus.card_dropped.emit(self, target_drop_zone)
-				target_drop_zone = null
+			if target_container != null:
+				CardFrameworkSignalBus.card_dropped.emit(self, target_container)
+				target_container = null
 
 
 func set_faces(front_face: Texture2D, back_face: Texture2D):
@@ -97,11 +98,11 @@ func move(target_destination: Vector2):
 	self.destination = target_destination
 
 	
-func move_to_drop_zone(drop_zone: DropZone):
+func move_to_card_container(_card_container: CardContainer):
 	rotation = 0
 	is_moving_to_destination = true
-	destination = drop_zone.get_place_zone()
-	target_drop_zone = drop_zone
+	destination = _card_container.drop_zone.get_place_zone()
+	target_container = _card_container
 
 
 func move_rotation(degree: float):
@@ -130,11 +131,13 @@ func set_holding():
 	current_holding_mouse_position = get_local_mouse_position()
 	z_index = stored_z_index + HOLDING_Z_INDEX
 	rotation = 0
+	if card_container != null:
+		card_container.hold_card(self)
 
 
-func set_releasing(itself_dropped: bool):
-	if is_holding:
-		CardFrameworkSignalBus.drag_dropped.emit(self, itself_dropped)
+func set_releasing():
+	if is_holding and card_container != null:
+		card_container.release_holding_cards()
 	is_holding = false
 
 
@@ -170,10 +173,10 @@ func _on_gui_input(event: InputEvent):
 		if mouse_event.is_released():
 			is_clicked = false
 			CardFrameworkSignalBus.card_released.emit(self)
-			set_releasing(true)
+			set_releasing()
 
 
-func _on_drag_dropped(_card: Card, _itself_dropped: bool):
+func _on_drag_dropped(_cards: Array):
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
