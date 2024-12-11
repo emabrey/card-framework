@@ -43,7 +43,6 @@ func _ready() -> void:
 		cards_node.mouse_filter = Control.MOUSE_FILTER_STOP
 		add_child(cards_node)
 	
-	CardFrameworkSignalBus.card_dropped.connect(_card_dropped)
 	if enable_drop_zone:
 		drop_zone = drop_zone_scene.instantiate()
 		add_child(drop_zone)
@@ -66,11 +65,7 @@ func _exit_tree() -> void:
 
 func _card_dropped(card: Card, target: CardContainer) -> void:
 	if enable_drop_zone and target == self:
-		if !_held_cards.has(card):
-			add_card(card)
-		else:
-			_update_target_z_index()
-			_update_target_positions()
+		add_card(card)
 	elif _held_cards.has(card):
 		remove_card(card)
 
@@ -90,9 +85,8 @@ func add_card(card: Card) -> void:
 
 func remove_card(card: Card) -> bool:
 	var index = _held_cards.find(card)
-	if index == -1:
-		return false
-	_held_cards.remove_at(_held_cards.find(card))
+	if index != -1:
+		_held_cards.remove_at(_held_cards.find(card))
 	_update_target_z_index()
 	_update_target_positions()
 	return true
@@ -116,8 +110,16 @@ func check_card_can_be_dropped(cards: Array) -> bool:
 
 
 func move_cards(cards: Array):
-	for card in cards:
-		card.move_to_card_container(self)
+	for i in range(cards.size() - 1, -1, -1):
+		var card = cards[i]
+		move_to_card_container(card)
+
+
+func move_to_card_container(_card: Card):
+	_card.card_container.remove_card(_card)
+	add_card(_card)
+	_card.destination = drop_zone.get_place_zone()
+	_card.target_container = self
 
 
 func hold_card(card: Card):

@@ -84,7 +84,6 @@ func _process(delta):
 			CardFrameworkSignalBus.card_move_done.emit(self)
 			is_destination_set = true
 			if target_container != null:
-				CardFrameworkSignalBus.card_dropped.emit(self, target_container)
 				target_container = null
 
 
@@ -102,13 +101,6 @@ func move(target_destination: Vector2):
 	rotation = 0
 	is_moving_to_destination = true
 	self.destination = target_destination
-
-	
-func move_to_card_container(_card_container: CardContainer):
-	# it should call move function inside the update_card_positions function
-	_card_container.update_card_positions(self)
-	destination = _card_container.drop_zone.get_place_zone()
-	target_container = _card_container
 
 
 func move_rotation(degree: float):
@@ -191,7 +183,6 @@ func _set_destination():
 
 func _on_drag_dropped(_cards: Array):
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-
 
 func _on_card_move_done(_card: Card):
 	mouse_filter = Control.MOUSE_FILTER_STOP
