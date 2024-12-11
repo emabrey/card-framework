@@ -75,12 +75,17 @@ func _card_dropped(card: Card, target: CardContainer) -> void:
 		remove_card(card)
 
 
-func add_card(card: Card) -> void:
-	Util.move_object(card, cards_node)
+func update_card_positions(card: Card) -> void:
 	card.card_container = self
-	_held_cards.append(card)
+	if not _held_cards.has(card):
+		_held_cards.append(card)
 	_update_target_z_index()
 	_update_target_positions()
+
+
+func add_card(card: Card) -> void:
+	update_card_positions(card)
+	Util.move_object(card, cards_node)
 
 
 func remove_card(card: Card) -> bool:

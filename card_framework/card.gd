@@ -101,6 +101,7 @@ func move(target_destination: Vector2):
 func move_to_card_container(_card_container: CardContainer):
 	rotation = 0
 	is_moving_to_destination = true
+	_card_container.update_card_positions(self)
 	destination = _card_container.drop_zone.get_place_zone()
 	target_container = _card_container
 
