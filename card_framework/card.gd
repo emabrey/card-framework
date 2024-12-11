@@ -73,10 +73,10 @@ func _process(delta):
 		if is_destination_set:
 			_set_destination()
 			is_destination_set = false
-			
-		position = position.move_toward(destination_as_local, return_speed * delta)
-		
-		if position.distance_to(destination_as_local) < 0.001:
+
+		var new_position = position.move_toward(destination_as_local, return_speed * delta)
+
+		if position == new_position or position.distance_to(destination_as_local) < 0.01:
 			position = destination_as_local
 			is_moving_to_destination = false
 			end_hovering(false)
@@ -85,6 +85,8 @@ func _process(delta):
 			is_destination_set = true
 			if target_container != null:
 				target_container = null
+		else:
+			position = new_position
 
 
 func set_faces(front_face: Texture2D, back_face: Texture2D):
