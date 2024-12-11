@@ -32,9 +32,11 @@ var stored_z_index: int :
 var is_moving_to_destination := false
 var current_holding_mouse_position: Vector2
 var destination: Vector2
+var destination_as_local: Vector2
 var destination_degree: float
 var target_container: CardContainer
 var card_container: CardContainer
+var is_destination_set := true
 
 static var is_any_card_hovering := false
 
@@ -68,15 +70,19 @@ func _process(delta):
 		global_position = get_global_mouse_position() - current_holding_mouse_position
 		
 	if is_moving_to_destination:
-		z_index = stored_z_index + HOLDING_Z_INDEX
-		global_position = global_position.move_toward(destination, return_speed * delta)
-		if global_position.distance_to(destination) < 0.001:
-			global_position = destination
+		if is_destination_set:
+			_set_destination()
+			is_destination_set = false
+			
+		position = position.move_toward(destination_as_local, return_speed * delta)
+		
+		if position.distance_to(destination_as_local) < 0.001:
+			position = destination_as_local
 			is_moving_to_destination = false
 			end_hovering(false)
 			z_index = stored_z_index
 			CardFrameworkSignalBus.card_move_done.emit(self)
-			rotation = destination_degree
+			is_destination_set = true
 			if target_container != null:
 				CardFrameworkSignalBus.card_dropped.emit(self, target_container)
 				target_container = null
@@ -99,8 +105,7 @@ func move(target_destination: Vector2):
 
 	
 func move_to_card_container(_card_container: CardContainer):
-	rotation = 0
-	is_moving_to_destination = true
+	# it should call move function inside the update_card_positions function
 	_card_container.update_card_positions(self)
 	destination = _card_container.drop_zone.get_place_zone()
 	target_container = _card_container
@@ -174,6 +179,14 @@ func _on_gui_input(event: InputEvent):
 			CardFrameworkSignalBus.card_released.emit(self)
 			if card_container != null:
 				card_container.release_holding_cards()
+
+
+func _set_destination():
+	var t = get_global_transform().affine_inverse()
+	var local_position = (t.x * destination.x) + (t.y * destination.y) + t.origin
+	destination_as_local = local_position + position
+	rotation = destination_degree
+	z_index = stored_z_index + HOLDING_Z_INDEX
 
 
 func _on_drag_dropped(_cards: Array):
