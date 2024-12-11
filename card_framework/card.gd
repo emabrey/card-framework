@@ -38,7 +38,7 @@ var target_container: CardContainer
 var card_container: CardContainer
 var is_destination_set := true
 
-static var is_any_card_hovering := false
+static var hovering_card_count := 0
 
 @onready var front_face_texture := $FrontFace/TextureRect
 @onready var back_face_texture := $BackFace/TextureRect
@@ -110,7 +110,7 @@ func move_rotation(degree: float):
 func start_hovering():
 	if not is_hovering:
 		is_hovering = true
-		is_any_card_hovering = true
+		hovering_card_count += 1
 		z_index = stored_z_index + HOLDING_Z_INDEX
 		position.y -= hover_distance
 
@@ -119,7 +119,9 @@ func end_hovering(restore_card_position: bool):
 	if is_hovering:
 		z_index = stored_z_index
 		is_hovering = false
-		is_any_card_hovering = false
+		hovering_card_count -= 1
+		if hovering_card_count < 0:
+			hovering_card_count = 0
 		if restore_card_position:
 			position.y += hover_distance
 
@@ -142,7 +144,7 @@ func get_string():
 
 
 func _on_mouse_enter():
-	if !is_any_card_hovering and !is_moving_to_destination and can_be_interact_with:
+	if hovering_card_count == 0 and !is_moving_to_destination and can_be_interact_with:
 		start_hovering()
 
 
