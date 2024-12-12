@@ -16,7 +16,7 @@ const HOLDING_Z_INDEX = 1000
 			front_face_texture.visible = false
 			back_face_texture.visible = true
 
-@export var return_speed := 200
+@export var return_speed := 2000
 @export var can_be_interact_with := true
 @export var hover_distance := 10
 
