@@ -134,6 +134,9 @@ func release_holding_cards():
 	var copied_holding_cards = _holding_cards.duplicate()
 	CardFrameworkSignalBus.drag_dropped.emit(copied_holding_cards)
 	_holding_cards.clear()
+	
+func get_string() -> String:
+	return "card_container: %d" % unique_id
 
 
 func _card_can_be_added(_cards: Array) -> bool:
