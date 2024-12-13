@@ -103,11 +103,20 @@ func check_card_can_be_dropped(cards: Array) -> bool:
 	return _card_can_be_added(cards)
 
 
-func move_cards(cards: Array):
-	card_manager.add_history(self, cards)
+func _move_cards(cards: Array):
 	for i in range(cards.size() - 1, -1, -1):
 		var card = cards[i]
 		_move_to_card_container(card)
+
+
+func move_cards(cards: Array, with_history: bool = true):
+	if with_history:
+		card_manager.add_history(self, cards)
+	_move_cards(cards)
+
+
+func undo(cards: Array):
+	_move_cards(cards)
 
 
 func _move_to_card_container(_card: Card):

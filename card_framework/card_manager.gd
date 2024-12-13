@@ -110,8 +110,14 @@ func add_history(to: CardContainer, cards: Array):
 	history_element.to = to
 	history_element.cards = cards
 	history.append(history_element)
+
+
+func undo():
+	if history.size() == 0:
+		return
 	
-	print(history_element.get_string())
+	var last = history.pop_back()
+	last.from.undo(last.cards)
 
 
 func reset_history():
