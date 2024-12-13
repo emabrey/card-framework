@@ -14,6 +14,8 @@ extends Control
 var card_factory: CardFactory
 var card_container_dict := {}
 
+var history := []
+
 func _init() -> void:
 	if Engine.is_editor_hint():
 		return
@@ -36,9 +38,11 @@ func _ready() -> void:
 	card_factory.back_image = back_image
 	card_factory.preload_card_data()
 
+
 func _is_valid_directory(path: String) -> bool:
 	var dir = DirAccess.open(path)
 	return dir != null
+
 
 func _pre_process_exported_variables() -> bool:
 	if not _is_valid_directory(card_asset_dir):
@@ -87,3 +91,28 @@ func _on_drag_dropped(cards: Array):
 	
 	for card in cards:
 		card.return_card()
+
+func add_history(to: CardContainer, cards: Array):
+	var from: CardContainer = null
+	
+	for i in range(cards.size()):
+		var c = cards[i]
+		var current = c.card_container
+		if i == 0:
+			from = current
+		else:
+			if from != current:
+				push_error("All cards must be from the same container!")
+				assert(false)
+	
+	var history_element = HistoryElement.new()
+	history_element.from = from
+	history_element.to = to
+	history_element.cards = cards
+	history.append(history_element)
+	
+	print(history_element.get_string())
+
+
+func reset_history():
+	history.clear()

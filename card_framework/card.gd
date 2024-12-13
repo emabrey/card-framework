@@ -21,6 +21,7 @@ const HOLDING_Z_INDEX = 1000
 @export var hover_distance := 10
 
 var card_info: Dictionary
+var card_container: CardContainer
 
 var is_hovering := false
 var is_clicked := false
@@ -35,7 +36,6 @@ var destination: Vector2
 var destination_as_local: Vector2
 var destination_degree: float
 var target_container: CardContainer
-var card_container: CardContainer
 var is_destination_set := true
 
 static var hovering_card_count := 0

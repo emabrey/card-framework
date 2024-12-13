@@ -104,12 +104,13 @@ func check_card_can_be_dropped(cards: Array) -> bool:
 
 
 func move_cards(cards: Array):
+	card_manager.add_history(self, cards)
 	for i in range(cards.size() - 1, -1, -1):
 		var card = cards[i]
-		move_to_card_container(card)
+		_move_to_card_container(card)
 
 
-func move_to_card_container(_card: Card):
+func _move_to_card_container(_card: Card):
 	_card.card_container.remove_card(_card)
 	add_card(_card)
 	_card.destination = drop_zone.get_place_zone()
