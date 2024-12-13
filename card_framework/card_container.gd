@@ -25,7 +25,9 @@ var _held_cards := []
 var _holding_cards := []
 var drop_zone_scene = preload("drop_zone.tscn")
 var drop_zone = null
-var cards_node
+
+var cards_node: Control
+var card_manager: CardManager
 
 
 func _init():
@@ -34,6 +36,8 @@ func _init():
 
 
 func _ready() -> void:
+	CardFrameworkSignalBus.card_container_added.emit(unique_id, self)
+	
 	# Check if 'Cards' node already exists
 	if has_node("Cards"):
 		cards_node = $Cards
@@ -48,26 +52,16 @@ func _ready() -> void:
 		add_child(drop_zone)
 		drop_zone.parent_card_container = self
 		# If sensor_size and placement_size are not set, they will follow the card size.
-		if is_instance_valid(get_parent()) and get_parent() is CardManager:
-			var card_manager = get_parent() as CardManager
-			if sensor_size == Vector2(0, 0):
-				sensor_size = card_manager.card_size
-			if placement_size == Vector2(0, 0):
-				placement_size = card_manager.card_size
+		if sensor_size == Vector2(0, 0):
+			sensor_size = card_manager.card_size
+		if placement_size == Vector2(0, 0):
+			placement_size = card_manager.card_size
 		drop_zone.set_sensor(sensor_size, sensor_position, sensor_texture, sensor_visibility)
 		drop_zone.set_placement(placement_size, placement_position, placement_texture, placement_visibility)
-	CardFrameworkSignalBus.card_container_added.emit(unique_id, self)
 
 
 func _exit_tree() -> void:
 	CardFrameworkSignalBus.card_container_deleted.emit(unique_id)
-
-
-func _card_dropped(card: Card, target: CardContainer) -> void:
-	if enable_drop_zone and target == self:
-		add_card(card)
-	elif _held_cards.has(card):
-		remove_card(card)
 
 
 func update_card_positions(card: Card) -> void:

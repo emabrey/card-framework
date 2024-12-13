@@ -67,6 +67,7 @@ func _pre_process_exported_variables() -> bool:
 
 
 func _on_card_container_added(id: int, card_container: CardContainer):
+	card_container.card_manager = self
 	card_container_dict[id] = card_container
 
 
