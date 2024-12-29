@@ -74,7 +74,7 @@ func update_card_positions(card: Card) -> void:
 
 func add_card(card: Card) -> void:
 	update_card_positions(card)
-	Util.move_object(card, cards_node)
+	_move_object(card, cards_node)
 
 
 func remove_card(card: Card) -> bool:
@@ -93,7 +93,7 @@ func has_card(card: Card) -> bool:
 
 func clear_cards():
 	for card in _held_cards:
-		Util.remove_object(card)
+		_remove_object(card)
 	_held_cards.clear()
 
 
@@ -122,7 +122,6 @@ func undo(cards: Array):
 func _move_to_card_container(_card: Card):
 	_card.card_container.remove_card(_card)
 	add_card(_card)
-	_card.destination = drop_zone.get_place_zone()
 	_card.target_container = self
 
 
@@ -153,3 +152,18 @@ func _update_target_z_index():
 
 func _update_target_positions():
 	pass
+
+
+func _move_object(target: Node, to: Node):
+	if target.get_parent() != null:
+		var global_pos = target.global_position
+		target.get_parent().remove_child(target)
+		to.add_child(target)
+		target.global_position = global_pos
+	else:
+		to.add_child(target)
+
+func _remove_object(target: Node):
+	if target.get_parent() != null:
+		target.get_parent().remove_child(target)
+	target.queue_free()
