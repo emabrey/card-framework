@@ -11,13 +11,12 @@ config_version=5
 [application]
 
 config/name="Freecell"
-run/main_scene="res://freecell/scenes/main_game/freecell_game.tscn"
+run/main_scene="res://freecell/scenes/menu/menu.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 
 [autoload]
 
-CardFrameworkSignalBus="*res://card_framework/card_framework_signal_bus.gd"
-Util="*res://card_framework/util.gd"
+CardFrameworkSignalBus="*res://addon/card_framework/card_framework_signal_bus.gd"
 RecordManager="*res://freecell/scenes/local_db/record_manager.gd"
 
 [display]
