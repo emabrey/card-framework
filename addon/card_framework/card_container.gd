@@ -12,13 +12,6 @@ static var next_id = 0
 @export var sensor_texture: Texture
 @export var sensor_visibility := true
 
-@export_subgroup("Placement")
-##The size of the placement. If not set, it will follow the size of the card.
-@export var placement_size: Vector2
-@export var placement_position: Vector2
-@export var placement_texture: Texture
-@export var placement_visibility := true
-
 
 var unique_id: int
 var _held_cards := []
@@ -51,13 +44,10 @@ func _ready() -> void:
 		drop_zone = drop_zone_scene.instantiate()
 		add_child(drop_zone)
 		drop_zone.parent_card_container = self
-		# If sensor_size and placement_size are not set, they will follow the card size.
+		# If sensor_size is not set, they will follow the card size.
 		if sensor_size == Vector2(0, 0):
 			sensor_size = card_manager.card_size
-		if placement_size == Vector2(0, 0):
-			placement_size = card_manager.card_size
 		drop_zone.set_sensor(sensor_size, sensor_position, sensor_texture, sensor_visibility)
-		drop_zone.set_placement(placement_size, placement_position, placement_texture, placement_visibility)
 
 
 func _exit_tree() -> void:
@@ -98,8 +88,12 @@ func clear_cards():
 
 
 func check_card_can_be_dropped(cards: Array) -> bool:
+	if drop_zone == null:
+		return false
+		
 	if not drop_zone.check_mouse_is_in_drop_zone():
 		return false
+		
 	return _card_can_be_added(cards)
 
 
@@ -162,6 +156,7 @@ func _move_object(target: Node, to: Node):
 		target.global_position = global_pos
 	else:
 		to.add_child(target)
+
 
 func _remove_object(target: Node):
 	if target.get_parent() != null:
