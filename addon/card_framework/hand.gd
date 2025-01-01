@@ -21,6 +21,14 @@ func _ready() -> void:
 	size = hand_area
 
 
+func get_random_card(n: int) -> Array:
+	var deck = _held_cards.duplicate()
+	deck.shuffle()
+	if n > _held_cards.size():
+		n = _held_cards.size()
+	return deck.slice(0, n)
+
+
 func _card_can_be_added(_cards: Array) -> bool:
 	var card_size = _cards.size()
 	return _held_cards.size() + card_size <= max_hand_size
@@ -33,8 +41,10 @@ func _update_target_z_index():
 
 
 func _update_target_positions():
+	print("update start")
 	for i in _held_cards.size():
 		var card = _held_cards[i]
+		print("update: %s" % card.get_string())
 		var hand_ratio = 0.5
 		if _held_cards.size() > 1:
 			hand_ratio = float(i) / float(_held_cards.size() - 1)
@@ -48,3 +58,4 @@ func _update_target_positions():
 			card.move_rotation(deg_to_rad(hand_rotation_curve.sample(hand_ratio)))
 		card.move(target_pos)
 		card.show_front = card_face_up
+		card.can_be_interact_with = true

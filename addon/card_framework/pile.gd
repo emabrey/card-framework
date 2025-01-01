@@ -20,16 +20,18 @@ enum PileDirection {
 
 const PILE_Z_INDEX := 3000
 
-func get_top_card() -> Card:
-	return _held_cards.back()
 
-
-func shuffle():
-	_held_cards.shuffle()
-	for i in range(_held_cards.size()):
-		var card = _held_cards[i]
-		cards_node.move_child(card, i)
-	_update_target_positions()
+func get_top_cards(n: int) -> Array:
+	var arr_size = _held_cards.size()
+	if n > arr_size:
+		n = arr_size
+	
+	var result = []
+	
+	for i in range(n):
+		result.append(_held_cards[arr_size - 1 - i])
+	
+	return result
 
 
 func _update_target_z_index():

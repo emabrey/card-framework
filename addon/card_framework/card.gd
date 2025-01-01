@@ -50,9 +50,6 @@ func _ready():
 	connect("mouse_exited", _on_mouse_exited)
 	connect("gui_input", _on_gui_input)
 	
-	CardFrameworkSignalBus.drag_dropped.connect(_on_drag_dropped)
-	CardFrameworkSignalBus.card_move_done.connect(_on_card_move_done)
-	
 	front_face_texture.size = card_size
 	back_face_texture.size = card_size
 	if front_image:
@@ -76,12 +73,14 @@ func _process(delta):
 
 		var new_position = position.move_toward(destination_as_local, return_speed * delta)
 
+		# card move done
 		if position == new_position or position.distance_to(destination_as_local) < 0.01:
 			position = destination_as_local
 			is_moving_to_destination = false
 			end_hovering(false)
 			z_index = stored_z_index
-			CardFrameworkSignalBus.card_move_done.emit(self)
+			#card_container.update_card_ui()
+			mouse_filter = Control.MOUSE_FILTER_STOP
 			is_destination_set = true
 			if target_container != null:
 				target_container = null
@@ -183,10 +182,3 @@ func _set_destination():
 	destination_as_local = local_position + position
 	rotation = destination_degree
 	z_index = stored_z_index + HOLDING_Z_INDEX
-
-
-func _on_drag_dropped(_cards: Array):
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-func _on_card_move_done(_card: Card):
-	mouse_filter = Control.MOUSE_FILTER_STOP

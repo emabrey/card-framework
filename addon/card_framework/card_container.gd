@@ -29,8 +29,6 @@ func _init():
 
 
 func _ready() -> void:
-	CardFrameworkSignalBus.card_container_added.emit(unique_id, self)
-	
 	# Check if 'Cards' node already exists
 	if has_node("Cards"):
 		cards_node = $Cards
@@ -39,6 +37,12 @@ func _ready() -> void:
 		cards_node.name = "Cards"
 		cards_node.mouse_filter = Control.MOUSE_FILTER_STOP
 		add_child(cards_node)
+	
+	card_manager = get_parent() as CardManager
+	if card_manager == null:
+		push_error("CardContainer should be under the CardManager")
+		
+	card_manager.add_card_container(unique_id, self)
 	
 	if enable_drop_zone:
 		drop_zone = drop_zone_scene.instantiate()
@@ -51,19 +55,18 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	CardFrameworkSignalBus.card_container_deleted.emit(unique_id)
+	card_manager.delete_card_container(unique_id)
 
 
-func update_card_positions(card: Card) -> void:
+func _update_card_positions(card: Card) -> void:
 	card.card_container = self
 	if not _held_cards.has(card):
 		_held_cards.append(card)
-	_update_target_z_index()
-	_update_target_positions()
+	update_card_ui()
 
 
 func add_card(card: Card) -> void:
-	update_card_positions(card)
+	_update_card_positions(card)
 	_move_object(card, cards_node)
 
 
@@ -71,8 +74,7 @@ func remove_card(card: Card) -> bool:
 	var index = _held_cards.find(card)
 	if index != -1:
 		_held_cards.remove_at(_held_cards.find(card))
-	_update_target_z_index()
-	_update_target_positions()
+	update_card_ui()
 	return true
 
 
@@ -97,16 +99,27 @@ func check_card_can_be_dropped(cards: Array) -> bool:
 	return _card_can_be_added(cards)
 
 
+func shuffle():
+	_held_cards.shuffle()
+	for i in range(_held_cards.size()):
+		var card = _held_cards[i]
+		cards_node.move_child(card, i)
+	update_card_ui()
+
+
 func _move_cards(cards: Array):
 	for i in range(cards.size() - 1, -1, -1):
 		var card = cards[i]
 		_move_to_card_container(card)
 
 
-func move_cards(cards: Array, with_history: bool = true):
+func move_cards(cards: Array, with_history: bool = true) -> bool:
+	if not _card_can_be_added(cards):
+		return false
 	if with_history:
 		card_manager.add_history(self, cards)
 	_move_cards(cards)
+	return true
 
 
 func undo(cards: Array):
@@ -138,6 +151,11 @@ func get_string() -> String:
 
 func _card_can_be_added(_cards: Array) -> bool:
 	return true
+
+
+func update_card_ui():
+	_update_target_z_index()
+	_update_target_positions()
 
 
 func _update_target_z_index():

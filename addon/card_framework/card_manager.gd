@@ -20,8 +20,6 @@ func _init() -> void:
 	if Engine.is_editor_hint():
 		return
 
-	CardFrameworkSignalBus.card_container_added.connect(_on_card_container_added)
-	CardFrameworkSignalBus.card_container_deleted.connect(_on_card_container_deleted)
 	CardFrameworkSignalBus.drag_dropped.connect(_on_drag_dropped)
 	
 
@@ -37,6 +35,14 @@ func _ready() -> void:
 	card_factory.card_info_dir = card_info_dir
 	card_factory.back_image = back_image
 	card_factory.preload_card_data()
+
+
+func add_card_container(id: int, card_container: CardContainer):
+	card_container_dict[id] = card_container
+
+
+func delete_card_container(id: int):
+	card_container_dict.erase(id)
 
 
 func _is_valid_directory(path: String) -> bool:
@@ -70,18 +76,13 @@ func _pre_process_exported_variables() -> bool:
 	return true
 
 
-func _on_card_container_added(id: int, card_container: CardContainer):
-	card_container.card_manager = self
-	card_container_dict[id] = card_container
-
-
-func _on_card_container_deleted(id: int):
-	card_container_dict.erase(id)
-
-
 func _on_drag_dropped(cards: Array):
 	if cards.size() == 0:
 		return
+	
+	for card in cards:
+		card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		
 	for key in card_container_dict.keys():
 		var card_container = card_container_dict[key]
 		var result = card_container.check_card_can_be_dropped(cards)
