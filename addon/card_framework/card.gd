@@ -1,7 +1,12 @@
 class_name Card
 extends Control
 
+
 const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
+
+
+static var hovering_card_count: int = 0
+
 
 ## The name of the card.
 @export var card_name: String
@@ -28,9 +33,9 @@ const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
 ## The distance the card hovers when interacted with.
 @export var hover_distance: int = 10
 
+
 var card_info: Dictionary
 var card_container: CardContainer
-
 var is_hovering: bool = false
 var is_pressed: bool = false
 var is_holding: bool = false
@@ -45,10 +50,10 @@ var destination_as_local: Vector2
 var destination_degree: float
 var target_container: CardContainer
 
-static var hovering_card_count: int = 0
 
 @onready var front_face_texture: TextureRect = $FrontFace/TextureRect
 @onready var back_face_texture: TextureRect = $BackFace/TextureRect
+
 
 func _ready():
 	mouse_filter = Control.MOUSE_FILTER_STOP
