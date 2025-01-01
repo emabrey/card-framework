@@ -36,7 +36,6 @@ var destination: Vector2
 var destination_as_local: Vector2
 var destination_degree: float
 var target_container: CardContainer
-var is_destination_set := true
 
 static var hovering_card_count := 0
 
@@ -67,9 +66,7 @@ func _process(delta):
 		global_position = get_global_mouse_position() - current_holding_mouse_position
 		
 	if is_moving_to_destination:
-		if is_destination_set:
-			_set_destination()
-			is_destination_set = false
+		_set_destination()
 
 		var new_position = position.move_toward(destination_as_local, return_speed * delta)
 
@@ -79,11 +76,10 @@ func _process(delta):
 			is_moving_to_destination = false
 			end_hovering(false)
 			z_index = stored_z_index
-			#card_container.update_card_ui()
+			rotation = destination_degree
 			mouse_filter = Control.MOUSE_FILTER_STOP
-			is_destination_set = true
-			if target_container != null:
-				target_container = null
+			card_container.on_card_move_done(self)
+			target_container = null
 		else:
 			position = new_position
 
@@ -98,14 +94,11 @@ func return_card():
 	is_moving_to_destination = true
 
 
-func move(target_destination: Vector2):
+func move(target_destination: Vector2, degree: float):
 	rotation = 0
+	destination_degree = degree
 	is_moving_to_destination = true
 	self.destination = target_destination
-
-
-func move_rotation(degree: float):
-	destination_degree = degree
 
 
 func start_hovering():
@@ -164,6 +157,9 @@ func _on_gui_input(event: InputEvent):
 		if mouse_event.button_index != MOUSE_BUTTON_LEFT:
 			return
 		
+		if is_moving_to_destination:
+			return
+		
 		if mouse_event.is_pressed():
 			is_clicked = true
 			CardFrameworkSignalBus.card_clicked.emit(self)
@@ -180,5 +176,4 @@ func _set_destination():
 	var t = get_global_transform().affine_inverse()
 	var local_position = (t.x * destination.x) + (t.y * destination.y) + t.origin
 	destination_as_local = local_position + position
-	rotation = destination_degree
 	z_index = stored_z_index + HOLDING_Z_INDEX

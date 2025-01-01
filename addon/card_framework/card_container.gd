@@ -158,6 +158,10 @@ func update_card_ui():
 	_update_target_positions()
 
 
+func on_card_move_done(_card: Card):
+	pass
+
+
 func _update_target_z_index():
 	pass
 

@@ -51,8 +51,7 @@ func _update_target_positions():
 		var offset = _calculate_offset(i)
 		var target_pos = position + offset
 		card.show_front = card_face_up
-		card.move_rotation(0)
-		card.move(target_pos)
+		card.move(target_pos, 0)
 		
 		if not allow_card_movement: 
 			card.can_be_interact_with = false
