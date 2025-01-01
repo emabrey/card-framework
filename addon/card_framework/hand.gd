@@ -57,4 +57,4 @@ func _update_target_positions():
 			target_rotation = deg_to_rad(hand_rotation_curve.sample(hand_ratio))
 		card.move(target_pos, target_rotation)
 		card.show_front = card_face_up
-		card.can_be_interact_with = true
+		card.can_be_interacted_with = true

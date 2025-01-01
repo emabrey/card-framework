@@ -1,13 +1,13 @@
 class_name Card
 extends Control
 
-const HOLDING_Z_INDEX = 1000
+const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
 
 @export var card_name: String
-@export var card_size := Vector2(150, 210)
+@export var card_size: Vector2 = Vector2(150, 210)
 @export var front_image: Texture2D
 @export var back_image: Texture2D
-@export var show_front := true : 
+@export var show_front: bool = true:
 	set(value):
 		if value:
 			front_face_texture.visible = true
@@ -16,37 +16,36 @@ const HOLDING_Z_INDEX = 1000
 			front_face_texture.visible = false
 			back_face_texture.visible = true
 
-@export var return_speed := 2000
-@export var can_be_interact_with := true
-@export var hover_distance := 10
+@export var moving_speed: int = 2000
+@export var can_be_interacted_with: bool = true
+@export var hover_distance: int = 10
 
 var card_info: Dictionary
 var card_container: CardContainer
 
-var is_hovering := false
-var is_clicked := false
-var is_holding := false
-var stored_z_index: int :
+var is_hovering: bool = false
+var is_pressed: bool = false
+var is_holding: bool = false
+var stored_z_index: int:
 	set(value):
 		z_index = value
 		stored_z_index = value
-var is_moving_to_destination := false
+var is_moving_to_destination: bool = false
 var current_holding_mouse_position: Vector2
 var destination: Vector2
 var destination_as_local: Vector2
 var destination_degree: float
 var target_container: CardContainer
 
-static var hovering_card_count := 0
+static var hovering_card_count: int = 0
 
-@onready var front_face_texture := $FrontFace/TextureRect
-@onready var back_face_texture := $BackFace/TextureRect
+@onready var front_face_texture: TextureRect = $FrontFace/TextureRect
+@onready var back_face_texture: TextureRect = $BackFace/TextureRect
 
-
-func _ready():	
+func _ready():
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	connect("mouse_entered", _on_mouse_enter)
-	connect("mouse_exited", _on_mouse_exited)
+	connect("mouse_exited", _on_mouse_exit)
 	connect("gui_input", _on_gui_input)
 	
 	front_face_texture.size = card_size
@@ -57,10 +56,10 @@ func _ready():
 		back_face_texture.texture = back_image
 	pivot_offset = card_size / 2
 	destination = global_position
-	show_front = show_front
 	stored_z_index = z_index
 
-func _process(delta):
+
+func _process(delta: float) -> void:
 	if is_holding:
 		start_hovering()
 		global_position = get_global_mouse_position() - current_holding_mouse_position
@@ -68,10 +67,10 @@ func _process(delta):
 	if is_moving_to_destination:
 		_set_destination()
 
-		var new_position = position.move_toward(destination_as_local, return_speed * delta)
+		var new_position = position.move_toward(destination_as_local, moving_speed * delta)
 
 		# card move done
-		if position == new_position or position.distance_to(destination_as_local) < 0.01:
+		if position.distance_to(new_position) < 0.01 or position.distance_to(destination_as_local) < 0.01:
 			position = destination_as_local
 			is_moving_to_destination = false
 			end_hovering(false)
@@ -84,96 +83,105 @@ func _process(delta):
 			position = new_position
 
 
-func set_faces(front_face: Texture2D, back_face: Texture2D):
+func set_faces(front_face: Texture2D, back_face: Texture2D) -> void:
 	front_face_texture.texture = front_face
 	back_face_texture.texture = back_face
-	
 
-func return_card():
+
+func return_card() -> void:
 	rotation = 0
 	is_moving_to_destination = true
 
 
-func move(target_destination: Vector2, degree: float):
+func move(target_destination: Vector2, degree: float) -> void:
 	rotation = 0
 	destination_degree = degree
 	is_moving_to_destination = true
 	self.destination = target_destination
 
 
-func start_hovering():
+func start_hovering() -> void:
 	if not is_hovering:
 		is_hovering = true
 		hovering_card_count += 1
-		z_index = stored_z_index + HOLDING_Z_INDEX
+		z_index += Z_INDEX_OFFSET_WHEN_HOLDING
 		position.y -= hover_distance
 
 
-func end_hovering(restore_card_position: bool):
+func end_hovering(restore_card_position: bool) -> void:
 	if is_hovering:
 		z_index = stored_z_index
 		is_hovering = false
 		hovering_card_count -= 1
-		if hovering_card_count < 0:
-			hovering_card_count = 0
 		if restore_card_position:
 			position.y += hover_distance
 
 
-func set_holding():
+func set_holding() -> void:
 	is_holding = true
 	current_holding_mouse_position = get_local_mouse_position()
-	z_index = stored_z_index + HOLDING_Z_INDEX
+	z_index = stored_z_index + Z_INDEX_OFFSET_WHEN_HOLDING
 	rotation = 0
-	if card_container != null:
+	if card_container:
 		card_container.hold_card(self)
 
 
-func set_releasing():
+func set_releasing() -> void:
 	is_holding = false
 
 
-func get_string():
+func get_string() -> String:
 	return card_name
 
 
-func _on_mouse_enter():
-	if hovering_card_count == 0 and !is_moving_to_destination and can_be_interact_with:
+func _on_mouse_enter() -> void:
+	if hovering_card_count == 0 and not is_moving_to_destination and can_be_interacted_with:
 		start_hovering()
 
 
-func _on_mouse_exited():
-	if is_clicked:
+func _on_mouse_exit() -> void:
+	if is_pressed:
 		return
 	end_hovering(true)
 
 
-func _on_gui_input(event: InputEvent):
-	if !can_be_interact_with:
-		return false
-		
+func _on_gui_input(event: InputEvent) -> void:
+	if not can_be_interacted_with:
+		return
+	
 	if event is InputEventMouseButton:
-		var mouse_event := event as InputEventMouseButton
-		if mouse_event.button_index != MOUSE_BUTTON_LEFT:
-			return
-		
-		if is_moving_to_destination:
-			return
-		
-		if mouse_event.is_pressed():
-			is_clicked = true
-			CardFrameworkSignalBus.card_clicked.emit(self)
-			set_holding()
-		
-		if mouse_event.is_released():
-			is_clicked = false
-			CardFrameworkSignalBus.card_released.emit(self)
-			if card_container != null:
-				card_container.release_holding_cards()
+		_handle_mouse_button(event as InputEventMouseButton)
 
 
-func _set_destination():
+func _handle_mouse_button(mouse_event: InputEventMouseButton) -> void:
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	
+	if is_moving_to_destination:
+		return
+	
+	if mouse_event.is_pressed():
+		_handle_mouse_pressed()
+	
+	if mouse_event.is_released():
+		_handle_mouse_released()
+
+
+func _handle_mouse_pressed() -> void:
+	is_pressed = true
+	CardFrameworkSignalBus.card_clicked.emit(self)
+	set_holding()
+
+
+func _handle_mouse_released() -> void:
+	is_pressed = false
+	CardFrameworkSignalBus.card_released.emit(self)
+	if card_container:
+		card_container.release_holding_cards()
+
+
+func _set_destination() -> void:
 	var t = get_global_transform().affine_inverse()
 	var local_position = (t.x * destination.x) + (t.y * destination.y) + t.origin
 	destination_as_local = local_position + position
-	z_index = stored_z_index + HOLDING_Z_INDEX
+	z_index = stored_z_index + Z_INDEX_OFFSET_WHEN_HOLDING

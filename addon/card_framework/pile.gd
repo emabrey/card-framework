@@ -37,7 +37,7 @@ func get_top_cards(n: int) -> Array:
 func _update_target_z_index():
 	for i in range(_held_cards.size()):
 		var card = _held_cards[i]
-		card.stored_z_index = PILE_Z_INDEX + i if card.is_clicked else i
+		card.stored_z_index = PILE_Z_INDEX + i if card.is_pressed else i
 
 
 func _update_target_positions():
@@ -54,12 +54,12 @@ func _update_target_positions():
 		card.move(target_pos, 0)
 		
 		if not allow_card_movement: 
-			card.can_be_interact_with = false
+			card.can_be_interacted_with = false
 		elif restrict_to_top_card:
 			if i == _held_cards.size() - 1:
-				card.can_be_interact_with = true
+				card.can_be_interacted_with = true
 			else:
-				card.can_be_interact_with = false
+				card.can_be_interacted_with = false
 
 
 func _calculate_offset(index: int) -> Vector2:
