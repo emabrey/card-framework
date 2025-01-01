@@ -1,24 +1,29 @@
 class_name CardContainer
 extends Control
 
+
 static var next_id = 0
 
+
 @export_group("drop_zone")
+## Enables or disables the drop zone functionality.
 @export var enable_drop_zone := true
 @export_subgroup("Sensor")
 ## The size of the sensor. If not set, it will follow the size of the card.
 @export var sensor_size: Vector2
+## The position of the sensor.
 @export var sensor_position: Vector2
+## The texture used for the sensor.
 @export var sensor_texture: Texture
+## Determines whether the sensor is visible or not.
 @export var sensor_visibility := true
 
 
 var unique_id: int
-var _held_cards := []
-var _holding_cards := []
 var drop_zone_scene = preload("drop_zone.tscn")
 var drop_zone = null
-
+var _held_cards := []
+var _holding_cards := []
 var cards_node: Control
 var card_manager: CardManager
 
@@ -38,9 +43,12 @@ func _ready() -> void:
 		cards_node.mouse_filter = Control.MOUSE_FILTER_STOP
 		add_child(cards_node)
 	
-	card_manager = get_parent() as CardManager
-	if card_manager == null:
+	var parent = get_parent()
+	if parent is CardManager:
+		card_manager = parent
+	else:
 		push_error("CardContainer should be under the CardManager")
+		return
 		
 	card_manager.add_card_container(unique_id, self)
 	
@@ -55,32 +63,25 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	card_manager.delete_card_container(unique_id)
-
-
-func _update_card_positions(card: Card) -> void:
-	card.card_container = self
-	if not _held_cards.has(card):
-		_held_cards.append(card)
-	update_card_ui()
+	if card_manager != null:
+		card_manager.delete_card_container(unique_id)
 
 
 func add_card(card: Card) -> void:
-	_update_card_positions(card)
+	_assign_card_to_container(card)
 	_move_object(card, cards_node)
 
 
 func remove_card(card: Card) -> bool:
 	var index = _held_cards.find(card)
 	if index != -1:
-		_held_cards.remove_at(_held_cards.find(card))
+		_held_cards.remove_at(index)
 	update_card_ui()
 	return true
 
 
 func has_card(card: Card) -> bool:
-	var index = _held_cards.find(card)
-	return index != -1
+	return _held_cards.has(card)
 
 
 func clear_cards():
@@ -99,18 +100,12 @@ func check_card_can_be_dropped(cards: Array) -> bool:
 	return _card_can_be_added(cards)
 
 
-func shuffle():
-	_held_cards.shuffle()
+func shuffle() -> void:
+	_fisher_yates_shuffle(_held_cards)
 	for i in range(_held_cards.size()):
 		var card = _held_cards[i]
 		cards_node.move_child(card, i)
 	update_card_ui()
-
-
-func _move_cards(cards: Array):
-	for i in range(cards.size() - 1, -1, -1):
-		var card = cards[i]
-		_move_to_card_container(card)
 
 
 func move_cards(cards: Array, with_history: bool = true) -> bool:
@@ -122,31 +117,64 @@ func move_cards(cards: Array, with_history: bool = true) -> bool:
 	return true
 
 
-func undo(cards: Array):
+func undo(cards: Array) -> void:
 	_move_cards(cards)
 
 
-func _move_to_card_container(_card: Card):
-	_card.card_container.remove_card(_card)
-	add_card(_card)
-	_card.target_container = self
-
-
-func hold_card(card: Card):
+func hold_card(card: Card) -> void:
 	_holding_cards.append(card)
 
 
 func release_holding_cards():
-	if _holding_cards.size() == 0:
+	if _holding_cards.is_empty():
 		return
 	for card in _holding_cards:
 		card.set_releasing()
 	var copied_holding_cards = _holding_cards.duplicate()
-	card_manager.on_drag_dropped(copied_holding_cards)
+	if card_manager != null:
+		card_manager.on_drag_dropped(copied_holding_cards)
 	_holding_cards.clear()
-	
+
+
 func get_string() -> String:
 	return "card_container: %d" % unique_id
+
+
+func on_card_move_done(_card: Card):
+	pass
+
+
+func on_card_pressed(_card: Card):
+	pass
+
+
+func _assign_card_to_container(card: Card) -> void:
+	if card.card_container != self:
+		card.card_container = self
+	if not _held_cards.has(card):
+		_held_cards.append(card)
+	update_card_ui()
+
+
+func _move_to_card_container(_card: Card) -> void:
+	if _card.card_container != null:
+		_card.card_container.remove_card(_card)
+	add_card(_card)
+	_card.target_container = self
+
+
+func _fisher_yates_shuffle(array: Array) -> void:
+	for i in range(array.size() - 1, 0, -1):
+		var j = randi() % (i + 1)
+		var temp = array[i]
+		array[i] = array[j]
+		array[j] = temp
+
+
+func _move_cards(cards: Array) -> void:
+	for i in range(cards.size() - 1, -1, -1):
+		var card = cards[i]
+		_move_to_card_container(card)
 
 
 func _card_can_be_added(_cards: Array) -> bool:
@@ -156,14 +184,6 @@ func _card_can_be_added(_cards: Array) -> bool:
 func update_card_ui():
 	_update_target_z_index()
 	_update_target_positions()
-
-
-func on_card_move_done(_card: Card):
-	pass
-
-
-func on_card_pressed(_card: Card):
-	pass
 
 
 func _update_target_z_index():
@@ -185,6 +205,7 @@ func _move_object(target: Node, to: Node):
 
 
 func _remove_object(target: Node):
-	if target.get_parent() != null:
-		target.get_parent().remove_child(target)
+	var parent = target.get_parent()
+	if parent != null:
+		parent.remove_child(target)
 	target.queue_free()
