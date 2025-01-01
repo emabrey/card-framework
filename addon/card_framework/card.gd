@@ -91,6 +91,25 @@ func _process(delta: float) -> void:
 			position = new_position
 
 
+func _on_mouse_enter() -> void:
+	if hovering_card_count == 0 and not is_moving_to_destination and can_be_interacted_with:
+		start_hovering()
+
+
+func _on_mouse_exit() -> void:
+	if is_pressed:
+		return
+	end_hovering(true)
+
+
+func _on_gui_input(event: InputEvent) -> void:
+	if not can_be_interacted_with:
+		return
+	
+	if event is InputEventMouseButton:
+		_handle_mouse_button(event as InputEventMouseButton)
+
+
 func set_faces(front_face: Texture2D, back_face: Texture2D) -> void:
 	front_face_texture.texture = front_face
 	back_face_texture.texture = back_face
@@ -140,25 +159,6 @@ func set_releasing() -> void:
 
 func get_string() -> String:
 	return card_name
-
-
-func _on_mouse_enter() -> void:
-	if hovering_card_count == 0 and not is_moving_to_destination and can_be_interacted_with:
-		start_hovering()
-
-
-func _on_mouse_exit() -> void:
-	if is_pressed:
-		return
-	end_hovering(true)
-
-
-func _on_gui_input(event: InputEvent) -> void:
-	if not can_be_interacted_with:
-		return
-	
-	if event is InputEventMouseButton:
-		_handle_mouse_button(event as InputEventMouseButton)
 
 
 func _handle_mouse_button(mouse_event: InputEventMouseButton) -> void:
