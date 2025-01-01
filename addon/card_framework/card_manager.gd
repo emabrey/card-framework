@@ -19,8 +19,6 @@ var history := []
 func _init() -> void:
 	if Engine.is_editor_hint():
 		return
-
-	CardFrameworkSignalBus.drag_dropped.connect(_on_drag_dropped)
 	
 
 func _ready() -> void:
@@ -76,7 +74,7 @@ func _pre_process_exported_variables() -> bool:
 	return true
 
 
-func _on_drag_dropped(cards: Array):
+func on_drag_dropped(cards: Array):
 	if cards.size() == 0:
 		return
 	

@@ -142,7 +142,7 @@ func release_holding_cards():
 	for card in _holding_cards:
 		card.set_releasing()
 	var copied_holding_cards = _holding_cards.duplicate()
-	CardFrameworkSignalBus.drag_dropped.emit(copied_holding_cards)
+	card_manager.on_drag_dropped(copied_holding_cards)
 	_holding_cards.clear()
 	
 func get_string() -> String:

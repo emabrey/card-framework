@@ -16,7 +16,6 @@ config/features=PackedStringArray("4.3", "Forward Plus")
 
 [autoload]
 
-CardFrameworkSignalBus="*res://addon/card_framework/card_framework_signal_bus.gd"
 RecordManager="*res://freecell/scenes/local_db/record_manager.gd"
 
 [display]
