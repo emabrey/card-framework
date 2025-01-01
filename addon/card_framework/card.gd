@@ -3,6 +3,8 @@ extends Control
 
 const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
 
+## The name of the card.
+@export var card_name: String
 ## The size of the card.
 @export var card_size: Vector2 = Vector2(150, 210)
 ## The texture for the front face of the card.
@@ -25,9 +27,6 @@ const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
 @export var can_be_interacted_with: bool = true
 ## The distance the card hovers when interacted with.
 @export var hover_distance: int = 10
-
-var card_info: Dictionary
-var card_container: CardContainer
 
 var is_hovering: bool = false
 var is_pressed: bool = false
