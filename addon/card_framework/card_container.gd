@@ -108,13 +108,12 @@ func shuffle() -> void:
 	update_card_ui()
 
 
-func move_cards(cards: Array, with_history: bool = true) -> bool:
+func move_cards(cards: Array, with_history: bool = true) -> void:
 	if not _card_can_be_added(cards):
-		return false
+		return
 	if with_history:
 		card_manager.add_history(self, cards)
 	_move_cards(cards)
-	return true
 
 
 func undo(cards: Array) -> void:
