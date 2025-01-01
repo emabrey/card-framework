@@ -1,6 +1,7 @@
 class_name Pile
 extends CardContainer
 
+
 enum PileDirection {
 	UP,
 	DOWN,
@@ -8,17 +9,24 @@ enum PileDirection {
 	RIGHT
 }
 
-@export var stack_display_gap := 8
-@export var max_stack_display := 6
-@export var card_face_up := true
-@export var layout := PileDirection.UP
-## Determines whether any card in the pile can be moved
-@export var allow_card_movement: bool = true
-## Restricts movement to only the top card of the pile (requires allow_card_movement to be true)
-@export var restrict_to_top_card: bool = true
-@export var align_drop_zone_with_top_card := true
 
 const PILE_Z_INDEX := 3000
+
+
+## The distance between each card in the pile.
+@export var stack_display_gap := 8
+## The maximum number of cards to display in the pile.
+@export var max_stack_display := 6
+## Determines whether the cards in the pile are face up.
+@export var card_face_up := true
+## The direction in which the cards are stacked.
+@export var layout := PileDirection.UP
+## Determines whether any card in the pile can be moved.
+@export var allow_card_movement: bool = true
+## Restricts movement to only the top card of the pile. (requires allow_card_movement to be true)
+@export var restrict_to_top_card: bool = true
+## Determines whether the drop zone follows the top card. (requires allow_card_movement to be true)
+@export var align_drop_zone_with_top_card := true
 
 
 func get_top_cards(n: int) -> Array:
@@ -37,7 +45,10 @@ func get_top_cards(n: int) -> Array:
 func _update_target_z_index():
 	for i in range(_held_cards.size()):
 		var card = _held_cards[i]
-		card.stored_z_index = PILE_Z_INDEX + i if card.is_pressed else i
+		if card.is_pressed:
+			card.stored_z_index = PILE_Z_INDEX + i
+		else:
+			card.stored_z_index = i
 
 
 func _update_target_positions():
@@ -63,9 +74,9 @@ func _update_target_positions():
 
 
 func _calculate_offset(index: int) -> Vector2:
-	var offset = Vector2()
 	var actual_index = min(index, max_stack_display - 1)
 	var offset_value = actual_index * stack_display_gap
+	var offset = Vector2()
 
 	match layout:
 		PileDirection.UP:
