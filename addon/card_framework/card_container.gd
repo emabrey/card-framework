@@ -6,7 +6,7 @@ static var next_id = 0
 @export_group("drop_zone")
 @export var enable_drop_zone := true
 @export_subgroup("Sensor")
-##The size of the sensor. If not set, it will follow the size of the card.
+## The size of the sensor. If not set, it will follow the size of the card.
 @export var sensor_size: Vector2
 @export var sensor_position: Vector2
 @export var sensor_texture: Texture

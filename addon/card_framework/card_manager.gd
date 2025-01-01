@@ -3,13 +3,13 @@ class_name CardManager
 extends Control
 
 @export var card_size := Vector2(150, 210)
-##card image asset directory
+## card image asset directory
 @export var card_asset_dir: String
-##card information json directory
+## card information json directory
 @export var card_info_dir: String
-##common back face image of cards
+## common back face image of cards
 @export var back_image: Texture2D
-##card factory scene
+## card factory scene
 @export var card_factory_scene: PackedScene
 var card_factory: CardFactory
 var card_container_dict := {}

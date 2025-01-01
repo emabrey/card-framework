@@ -3,10 +3,14 @@ extends Control
 
 const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
 
-@export var card_name: String
+## The size of the card.
 @export var card_size: Vector2 = Vector2(150, 210)
+## The texture for the front face of the card.
 @export var front_image: Texture2D
+## The texture for the back face of the card.
 @export var back_image: Texture2D
+## Whether the front face of the card is shown.
+## If true, the front face is visible; otherwise, the back face is visible.
 @export var show_front: bool = true:
 	set(value):
 		if value:
@@ -15,13 +19,12 @@ const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
 		else:
 			front_face_texture.visible = false
 			back_face_texture.visible = true
-
+## The speed at which the card moves.
 @export var moving_speed: int = 2000
+## Whether the card can be interacted with.
 @export var can_be_interacted_with: bool = true
+## The distance the card hovers when interacted with.
 @export var hover_distance: int = 10
-
-var card_info: Dictionary
-var card_container: CardContainer
 
 var is_hovering: bool = false
 var is_pressed: bool = false

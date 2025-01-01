@@ -12,9 +12,9 @@ enum PileDirection {
 @export var max_stack_display := 6
 @export var card_face_up := true
 @export var layout := PileDirection.UP
-##Determines whether any card in the pile can be moved
+## Determines whether any card in the pile can be moved
 @export var allow_card_movement: bool = true
-##Restricts movement to only the top card of the pile (requires allow_card_movement to be true)
+## Restricts movement to only the top card of the pile (requires allow_card_movement to be true)
 @export var restrict_to_top_card: bool = true
 @export var align_drop_zone_with_top_card := true
 
