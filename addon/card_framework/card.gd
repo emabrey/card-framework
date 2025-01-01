@@ -169,13 +169,12 @@ func _handle_mouse_button(mouse_event: InputEventMouseButton) -> void:
 
 func _handle_mouse_pressed() -> void:
 	is_pressed = true
-	CardFrameworkSignalBus.card_clicked.emit(self)
+	card_container.on_card_pressed(self)
 	set_holding()
 
 
 func _handle_mouse_released() -> void:
 	is_pressed = false
-	CardFrameworkSignalBus.card_released.emit(self)
 	if card_container:
 		card_container.release_holding_cards()
 
