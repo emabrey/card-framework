@@ -1,9 +1,11 @@
 class_name HistoryElement
 extends Object
 
+
 var from: CardContainer
 var to: CardContainer
 var cards: Array
+
 
 func get_string() -> String:
 	var from_str = from.get_string()
