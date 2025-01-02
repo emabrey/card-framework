@@ -14,10 +14,6 @@ config/name="Freecell"
 run/main_scene="res://freecell/scenes/menu/menu.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 
-[autoload]
-
-RecordManager="*res://freecell/scenes/local_db/record_manager.gd"
-
 [display]
 
 window/size/viewport_width=1920
