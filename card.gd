@@ -1,12 +1,13 @@
 class_name Card
 extends Control
 
+var Z_INDEX_OFFSET_WHEN_HOLDING = 1000
 
-const Z_INDEX_OFFSET_WHEN_HOLDING = 1000
-
+var tween_rot: Tween
+var tween_hover: Tween 
+const max_skew_angle = 10
 
 static var hovering_card_count: int = 0
-
 
 ## The name of the card.
 @export var card_name: String
@@ -113,6 +114,8 @@ func _on_gui_input(event: InputEvent) -> void:
 	
 	if event is InputEventMouseButton:
 		_handle_mouse_button(event as InputEventMouseButton)
+		
+	#_card_effect(event)
 
 
 func set_faces(front_face: Texture2D, back_face: Texture2D) -> void:
@@ -138,6 +141,7 @@ func start_hovering() -> void:
 		hovering_card_count += 1
 		z_index += Z_INDEX_OFFSET_WHEN_HOLDING
 		position.y -= hover_distance
+		_card_entered_tween()
 
 
 func end_hovering(restore_card_position: bool) -> void:
@@ -147,6 +151,9 @@ func end_hovering(restore_card_position: bool) -> void:
 		hovering_card_count -= 1
 		if restore_card_position:
 			position.y += hover_distance
+		#front_face_texture.material.set_shader_parameter("x_rot", 0)
+		#front_face_texture.material.set_shader_parameter("y_rot", 0)
+		_card_exited_tween()
 
 
 func set_holding() -> void:
@@ -197,3 +204,40 @@ func _set_destination() -> void:
 	var local_position = (t.x * destination.x) + (t.y * destination.y) + t.origin
 	destination_as_local = local_position + position
 	z_index = stored_z_index + Z_INDEX_OFFSET_WHEN_HOLDING
+	
+func _card_effect(event: InputEvent) -> void:
+			
+	if not event is InputEventMouseMotion: return
+	if not is_hovering: return
+	
+	var mouse_pos: Vector2 = get_local_mouse_position()
+	var diff: Vector2 = (position + size) - mouse_pos
+
+	var lerp_val_x: float = remap(mouse_pos.x, 0.0, card_size.x, 0, 1)
+	var lerp_val_y: float = remap(mouse_pos.y, 0.0, card_size.y, 0, 1)
+
+	var rot_x: float = rad_to_deg(lerp_angle(-max_skew_angle, max_skew_angle, lerp_val_x))
+	var rot_y: float = rad_to_deg(lerp_angle(max_skew_angle, -max_skew_angle, lerp_val_y))
+
+	front_face_texture.material.set_shader_parameter("x_rot", -rot_y)
+	front_face_texture.material.set_shader_parameter("y_rot", rot_x)
+	
+func _card_entered_tween():
+	if tween_hover and tween_hover.is_running():
+		tween_hover.kill()
+	tween_hover = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween_hover.tween_property(self, "scale", Vector2(1.2, 1.2), 0.5)
+	
+func _card_exited_tween():
+	# Reset rotation
+	if tween_rot and tween_rot.is_running():
+		tween_rot.kill()
+	tween_rot = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK).set_parallel(true)
+	tween_rot.tween_property(front_face_texture.material, "shader_parameter/x_rot", 0.0, 0.5)
+	tween_rot.tween_property(front_face_texture.material, "shader_parameter/y_rot", 0.0, 0.5)
+	
+	# Reset scale
+	if tween_hover and tween_hover.is_running():
+		tween_hover.kill()
+	tween_hover = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween_hover.tween_property(self, "scale", Vector2.ONE, 0.55)

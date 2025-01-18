@@ -1,17 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://brjlo8xing83p"]
+[gd_scene load_steps=4 format=3 uid="uid://brjlo8xing83p"]
 
 [ext_resource type="Script" path="res://addons/card-framework/card.gd" id="1_6ohl5"]
+[ext_resource type="Shader" path="res://shaders/fake_perspective.gdshader" id="2_1iv3s"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nh727"]
+resource_local_to_scene = true
+shader = ExtResource("2_1iv3s")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = false
+shader_parameter/y_rot = 8.55e-06
+shader_parameter/x_rot = 8.55e-06
+shader_parameter/inset = 0.0
 
 [node name="Card" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_6ohl5")
-card_name = null
-card_size = null
-show_front = null
-moving_speed = null
-can_be_interacted_with = null
-hover_distance = null
 
 [node name="FrontFace" type="Control" parent="."]
 layout_mode = 1
@@ -21,6 +25,8 @@ offset_bottom = 40.0
 mouse_filter = 1
 
 [node name="TextureRect" type="TextureRect" parent="FrontFace"]
+texture_filter = 5
+material = SubResource("ShaderMaterial_nh727")
 layout_mode = 1
 offset_right = 150.0
 offset_bottom = 210.0

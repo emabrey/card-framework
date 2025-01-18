@@ -1,10 +1,22 @@
 [gd_scene load_steps=3 format=3 uid="uid://c7u8hryloq7hy"]
 
 [ext_resource type="Script" path="res://addons/card-framework/card_manager.gd" id="1_cp2xm"]
-[ext_resource type="PackedScene" uid="uid://7qcsutlss3oj" path="res://addons/card-framework/card_factory.tscn" id="2_57jpu"]
+
+[sub_resource type="PackedScene" id="PackedScene_nppl4"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("CardFactory", "script", "default_card_scene", "Node"),
+"node_count": 0,
+"node_paths": [],
+"nodes": PackedInt32Array(),
+"variants": [],
+"version": 3
+}
 
 [node name="CardManager" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_cp2xm")
-card_factory_scene = ExtResource("2_57jpu")
+card_factory_scene = SubResource("PackedScene_nppl4")
